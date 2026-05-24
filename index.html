@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 타롯 운세</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold-l:#f0d87a;--gold-d:#7a5e20;
+  --pur:#7b2d8b;--pur-l:#a355b8;
+  --txt:#f0e6ff;--txt2:#b8a8d0;
+  --cw:250px;--ch:426px;
+}
+body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-height:100vh;overflow-x:hidden}
+
+/* ── stars ── */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) var(--dl,0s) infinite ease-in-out}
+@keyframes twinkle{0%,100%{opacity:.06;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+
+/* ── nebulae ── */
+.neb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.n1{width:700px;height:700px;background:radial-gradient(circle,rgba(100,30,160,.13) 0%,transparent 70%);top:-200px;left:-200px;animation:ndrift 22s infinite ease-in-out}
+.n2{width:600px;height:600px;background:radial-gradient(circle,rgba(20,50,180,.1) 0%,transparent 70%);bottom:-150px;right:-150px;animation:ndrift 28s infinite ease-in-out reverse}
+.n3{width:450px;height:450px;background:radial-gradient(circle,rgba(170,40,100,.07) 0%,transparent 70%);top:35%;left:30%;animation:ndrift 19s 6s infinite ease-in-out}
+@keyframes ndrift{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,28px)}}
+
+/* ── layout ── */
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:44px 20px 70px;text-align:center}
+
+/* ── header ── */
+header{margin-bottom:52px}
+.tdeco{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:14px}
+.tline{flex:1;max-width:130px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.tsym{color:var(--gold);font-size:20px;animation:spin 14s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
+   background:linear-gradient(135deg,#7a5a18,var(--gold-l),var(--gold),#7a5a18);
+   background-size:250% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+   background-clip:text;animation:shim 5s linear infinite;letter-spacing:2px;margin-bottom:6px}
+@keyframes shim{0%{background-position:0 center}100%{background-position:250% center}}
+.sub{font-family:'Cinzel',serif;font-size:11px;color:var(--pur-l);letter-spacing:5px;text-transform:uppercase;margin-bottom:18px}
+.date-badge{display:inline-block;padding:6px 22px;border:1px solid rgba(201,168,76,.35);border-radius:24px;font-size:13px;color:var(--gold);letter-spacing:1px}
+
+/* ── instruction ── */
+.inst{margin-bottom:44px;font-size:15px;color:var(--txt2);line-height:2}
+.inst .hint{font-family:'Cinzel',serif;font-size:10px;color:var(--pur-l);letter-spacing:4px;margin-top:6px}
+
+/* ── grid ── */
+.grid{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin-bottom:52px;transition:opacity .4s}
+.slot{display:flex;flex-direction:column;align-items:center;gap:13px}
+.pos-lbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--gold-d);text-transform:uppercase}
+
+/* ── card container ── */
+.card{width:var(--cw);height:var(--ch);perspective:1200px;cursor:pointer}
+.inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.4,.1,.2,1)}
+.card.flipped .inner{transform:rotateY(180deg)}
+.card:not(.flipped):hover .inner{transform:rotateY(16deg) translateY(-10px) scale(1.04)}
+
+/* ── card faces ── */
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;overflow:hidden}
+
+/* back */
+.back{border:1px solid rgba(201,168,76,.5);transition:box-shadow .3s}
+.card:not(.flipped):hover .back{box-shadow:0 6px 44px rgba(120,40,180,.65),0 -14px 36px rgba(120,40,180,.3)}
+
+/* front */
+.front{transform:rotateY(180deg);display:flex;flex-direction:column;border:1px solid rgba(201,168,76,.55);background:#060012}
+.card.flipped .front{box-shadow:0 0 36px rgba(201,168,76,.28),0 -12px 28px rgba(201,168,76,.14)}
+
+.art-wrap{flex:0 0 58%;position:relative;overflow:hidden}
+.art-wrap svg{width:100%;height:100%;display:block}
+.art-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:13px 13px 0 0}
+.back-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:13px}
+
+.card-info{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 12px 10px;
+  background:linear-gradient(to bottom,rgba(4,0,12,.7) 0%,rgba(4,0,10,.97) 100%)}
+.cname-kr{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:var(--gold-l);line-height:1.2}
+.cname-en{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-d);letter-spacing:2px;text-transform:uppercase}
+.ckw{font-size:9.5px;color:var(--pur-l);letter-spacing:.5px;text-align:center}
+.cdiv{width:90%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);margin:3px 0}
+.cmsg{font-size:9.5px;color:var(--txt2);line-height:1.7;text-align:center;flex:1;display:flex;align-items:center}
+.corient{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-d);letter-spacing:1px}
+.corient.rev{color:#c06070}
+
+/* ── summary ── */
+.summary{display:none;position:relative;margin-bottom:52px;animation:risein .9s cubic-bezier(.2,.8,.3,1)}
+.summary.on{display:block}
+@keyframes risein{from{opacity:0;transform:translateY(36px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.sum-outer{
+  position:relative;
+  background:linear-gradient(160deg,rgba(30,4,60,.96) 0%,rgba(8,0,22,.98) 60%,rgba(20,2,40,.96) 100%);
+  border:1px solid rgba(201,168,76,.4);
+  border-radius:20px;
+  padding:48px 52px 44px;
+  overflow:hidden;
+}
+.sum-outer::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.10) 0%,transparent 70%);
+  pointer-events:none;
+}
+.sum-outer::after{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:70%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.7),transparent);
+}
+.sum-corner{position:absolute;width:22px;height:22px;border-color:rgba(201,168,76,.55);border-style:solid}
+.sum-corner.tl{top:14px;left:14px;border-width:1px 0 0 1px}
+.sum-corner.tr{top:14px;right:14px;border-width:1px 1px 0 0}
+.sum-corner.bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
+.sum-corner.br{bottom:14px;right:14px;border-width:0 1px 1px 0}
+
+.sum-eyebrow{font-family:'Cinzel',serif;font-size:9px;letter-spacing:6px;color:rgba(201,168,76,.55);text-transform:uppercase;margin-bottom:18px}
+.sum-title{
+  font-family:'Cinzel',serif;font-size:clamp(18px,3vw,26px);font-weight:700;letter-spacing:2px;
+  background:linear-gradient(135deg,#8a6820,var(--gold-l),#ffe89a,var(--gold),#8a6820);
+  background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:shim 6s linear infinite;
+  margin-bottom:22px;line-height:1.4;
+}
+.sum-divider{display:flex;align-items:center;gap:14px;margin:0 auto 26px;max-width:380px}
+.sum-divider span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.45),transparent)}
+.sum-divider i{color:var(--gold);font-style:normal;font-size:13px;opacity:.8}
+.sum-text{font-size:clamp(14px,2vw,17px);color:#ddd0f5;line-height:2.2;font-weight:300;letter-spacing:.3px}
+.sum-glow{
+  position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+  width:300px;height:120px;
+  background:radial-gradient(ellipse,rgba(123,45,139,.22) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* ── button ── */
+.btn{background:transparent;border:1px solid rgba(201,168,76,.45);color:var(--gold);
+  font-family:'Cinzel',serif;font-size:12px;letter-spacing:4px;padding:15px 48px;
+  cursor:pointer;border-radius:32px;text-transform:uppercase;transition:all .3s;position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(120,40,160,.08));opacity:0;transition:opacity .3s}
+.btn:hover{border-color:var(--gold);box-shadow:0 0 26px rgba(201,168,76,.32);transform:translateY(-3px)}
+.btn:hover::before{opacity:1}
+.btn:active{transform:translateY(-1px)}
+
+footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,168,208,.22);letter-spacing:2px}
+
+/* ── ad modal ── */
+.ad-modal{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(2,0,10,.82);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+.ad-modal.on{display:flex;animation:fadein .4s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ad-box{
+  position:relative;width:360px;max-width:94vw;
+  background:linear-gradient(160deg,rgba(22,4,46,.98),rgba(8,0,20,.99));
+  border:1px solid rgba(201,168,76,.45);border-radius:20px;
+  padding:36px 28px 30px;text-align:center;
+}
+.ad-box::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent);
+}
+.ad-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;color:rgba(201,168,76,.45);text-transform:uppercase;margin-bottom:18px}
+.ad-slot{
+  min-height:100px;background:rgba(255,255,255,.03);border:1px dashed rgba(201,168,76,.2);
+  border-radius:10px;margin-bottom:22px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.ad-slot-hint{font-size:11px;color:rgba(184,168,208,.3);font-family:'Cinzel',serif;letter-spacing:2px}
+.ad-countdown{font-family:'Cinzel',serif;font-size:13px;color:var(--txt2);margin-bottom:18px;letter-spacing:1px}
+.ad-countdown b{color:var(--gold);font-size:18px}
+.ad-skip{
+  background:transparent;border:1px solid rgba(201,168,76,.5);color:var(--gold);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;padding:12px 36px;
+  cursor:pointer;border-radius:28px;text-transform:uppercase;transition:all .3s;
+  opacity:.4;pointer-events:none;
+}
+.ad-skip.ready{opacity:1;pointer-events:auto}
+.ad-skip.ready:hover{background:rgba(201,168,76,.1);box-shadow:0 0 20px rgba(201,168,76,.28);transform:translateY(-2px)}
+
+/* ── responsive ── */
+@media(max-width:860px){
+  :root{--cw:200px;--ch:341px}
+  .grid{gap:18px}
+}
+@media(max-width:680px){
+  :root{--cw:168px;--ch:286px}
+  .grid{gap:12px}
+}
+@media(max-width:450px){
+  :root{--cw:140px;--ch:238px}
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
+
+<div class="wrap">
+  <header>
+    <div class="tdeco">
+      <div class="tline"></div><span class="tsym">✦</span><div class="tline"></div>
+    </div>
+    <h1>오늘의 타롯 운세</h1>
+    <p class="sub">Daily Tarot Reading</p>
+    <div class="date-badge" id="dateBadge"></div>
+  </header>
+
+  <p class="inst">
+    세 장의 카드가 당신을 기다립니다<br>
+    각 카드를 클릭하여 오늘의 운명을 확인하세요
+    <br><span class="hint">✦ &nbsp; Past &nbsp;·&nbsp; Present &nbsp;·&nbsp; Future &nbsp; ✦</span>
+  </p>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="summary" id="summary">
+    <div class="sum-outer">
+      <div class="sum-corner tl"></div><div class="sum-corner tr"></div>
+      <div class="sum-corner bl"></div><div class="sum-corner br"></div>
+      <div class="sum-eyebrow">✦ &nbsp; Today's Oracle &nbsp; ✦</div>
+      <div class="sum-title" id="sumTitle">오늘의 별이 전하는 말</div>
+      <div class="sum-divider"><span></span><i>✦</i><span></span></div>
+      <p class="sum-text" id="sumText"></p>
+      <div class="sum-glow"></div>
+    </div>
+  </div>
+
+  <!-- 광고 모달 -->
+  <div class="ad-modal" id="adModal">
+    <div class="ad-box">
+      <div class="ad-label">잠시 후 오늘의 운세가 공개됩니다</div>
+      <!-- ▼ 카카오 애드핏: data-ad-unit 값을 발급받은 ID로 교체하세요 -->
+      <div class="ad-slot">
+        <ins class="kakao_ad_area" style="display:none;"
+          data-ad-unit="DAN-XXXXXXXXXX"
+          data-ad-width="320"
+          data-ad-height="100"></ins>
+        <span class="ad-slot-hint" id="adHint">AD</span>
+      </div>
+      <!-- ▲ 애드핏 스크립트는 </body> 직전에 한 번만 삽입됩니다 -->
+      <div class="ad-countdown"><b id="adCount">5</b> 초 후 운세 공개</div>
+      <button class="ad-skip" id="adSkip" onclick="closeAd()">✦ &nbsp; 운세 보기 &nbsp; ✦</button>
+    </div>
+  </div>
+
+  <button class="btn" onclick="shuffle()">✦ &nbsp; 카드 다시 뽑기 &nbsp; ✦</button>
+
+  <footer>
+    <p>The stars have spoken · 별이 속삭인 것을 카드가 전합니다</p>
+    <p id="imgGuide" style="margin-top:14px;font-size:9px;color:rgba(184,168,208,.18);letter-spacing:1px;line-height:2"></p>
+  </footer>
+</div>
+
+<script>
+// ═══ TAROT DATA ═══
+const T = [
+  {n:'0',  kr:'바보',         en:'The Fool',          kw:'새로운 시작 · 자유 · 순수',      file:'0_the_fool',
+   up:'예상치 못한 새로운 길이 열립니다. 두려움 없이 첫 발을 내딛을 때 우주는 당신 편입니다.',
+   rv:'무모함이 화를 부를 수 있습니다. 충동적인 결정은 잠시 멈추고 내면의 소리에 귀 기울여 보세요.'},
+  {n:'I',  kr:'마법사',       en:'The Magician',       kw:'의지력 · 기술 · 집중',           file:'1_the_magician',
+   up:'원하는 것을 이룰 능력이 이미 손 안에 있습니다. 의지를 모아 행동하세요.',
+   rv:'재능이 있지만 방향을 잃었습니다. 능력을 무엇을 위해 쓸지 다시 생각해 보세요.'},
+  {n:'II', kr:'여사제',       en:'The High Priestess', kw:'직관 · 신비 · 내면의 지혜',      file:'2_the_high_priestess',
+   up:'표면 아래 더 깊은 진실이 있습니다. 논리보다 직감을 믿어 보세요.',
+   rv:'직관을 억누르는 것이 당신을 제한하고 있습니다. 내면을 열어보세요.'},
+  {n:'III',kr:'여황제',       en:'The Empress',        kw:'풍요 · 창조 · 모성',             file:'3_the_empress',
+   up:'풍요로운 에너지가 가득합니다. 창의력이 넘치고 인간관계도 꽃필 시간입니다.',
+   rv:'창의력이 막히거나 과도한 의존이 있습니다. 자기 자신을 먼저 돌봐야 합니다.'},
+  {n:'IV', kr:'황제',         en:'The Emperor',        kw:'권위 · 안정 · 구조',             file:'4_the_emperor',
+   up:'강한 의지와 체계적인 접근이 성공을 가져옵니다. 리더십을 발휘할 때입니다.',
+   rv:'통제욕이 지나치거나 권위에 짓눌려 있습니다. 유연함이 필요합니다.'},
+  {n:'V',  kr:'교황',         en:'The Hierophant',     kw:'전통 · 가르침 · 신념',           file:'5_the_hierophant',
+   up:'검증된 방법과 전통적인 지혜에서 힌트를 얻으세요. 신뢰받는 조언자를 찾으세요.',
+   rv:'관습에 얽매여 새로운 가능성을 놓치고 있습니다. 규칙을 의심해 볼 때입니다.'},
+  {n:'VI', kr:'연인',         en:'The Lovers',         kw:'사랑 · 선택 · 조화',             file:'6_the_lovers',
+   up:'마음 깊이 원하는 것을 선택해야 하는 순간입니다. 진정한 가치관을 따르세요.',
+   rv:'내적 갈등이나 관계의 불균형이 있습니다. 자기 자신에게 솔직해지세요.'},
+  {n:'VII',kr:'전차',         en:'The Chariot',        kw:'승리 · 의지 · 돌파',             file:'7_the_chariot',
+   up:'강인한 의지로 어떤 장애물도 돌파할 수 있습니다. 목표를 향해 달려가세요.',
+   rv:'방향이 흔들리거나 에너지가 분산되어 있습니다. 방향을 재정비하세요.'},
+  {n:'VIII',kr:'힘',          en:'Strength',           kw:'용기 · 인내 · 내면의 힘',        file:'8_strength',
+   up:'부드러운 강인함이 가장 강한 힘입니다. 온화함으로 어려운 상황을 극복하세요.',
+   rv:'자기 의심이 당신을 가로막고 있습니다. 내면의 용기를 다시 찾으세요.'},
+  {n:'IX', kr:'은둔자',       en:'The Hermit',         kw:'고독 · 성찰 · 내면의 빛',        file:'9_the_hermit',
+   up:'혼자만의 시간이 필요합니다. 고요함 속에서 진정한 자신을 찾는 여정이 시작됩니다.',
+   rv:'너무 오래 고립되어 있거나 내면을 외면하고 있습니다. 균형이 필요합니다.'},
+  {n:'X',  kr:'운명의 바퀴', en:'Wheel of Fortune',   kw:'변화 · 순환 · 운명',             file:'10_wheel_of_fortune',
+   up:'커다란 변화와 행운의 전환점이 찾아옵니다. 흐름을 타고 변화를 받아들이세요.',
+   rv:'불운한 흐름이 있더라도 영원하지 않습니다. 인내와 적응이 필요한 시간입니다.'},
+  {n:'XI', kr:'정의',         en:'Justice',            kw:'균형 · 진실 · 결과',             file:'11_justice',
+   up:'공정한 결과가 기다립니다. 진실을 말하고 균형 잡힌 판단을 내리세요.',
+   rv:'불공정한 상황이나 책임 회피가 문제입니다. 솔직하게 마주하세요.'},
+  {n:'XII',kr:'매달린 사람', en:'The Hanged Man',     kw:'희생 · 인내 · 새로운 관점',      file:'12_the_hanged_man',
+   up:'잠시 멈추고 다른 각도에서 상황을 바라보세요. 내려놓음이 새 통찰을 줄 것입니다.',
+   rv:'놓아야 할 것을 붙잡고 있습니다. 놓아주어야 앞으로 나아갈 수 있습니다.'},
+  {n:'XIII',kr:'죽음',        en:'Death',              kw:'변환 · 끝과 시작 · 해방',        file:'13_death',
+   up:'두려운 변화가 실은 새로운 시작입니다. 낡은 것을 놓아주어야 새 에너지가 옵니다.',
+   rv:'변화를 거부하거나 과거에 집착하고 있습니다. 흘러가야 할 것을 놓아주세요.'},
+  {n:'XIV',kr:'절제',         en:'Temperance',         kw:'균형 · 인내 · 조화',             file:'14_temperance',
+   up:'조화롭고 균형 잡힌 접근이 최선입니다. 차분하게 꾸준히 나아가세요.',
+   rv:'극단적인 행동이나 불균형이 문제입니다. 중용의 지혜가 필요합니다.'},
+  {n:'XV', kr:'악마',         en:'The Devil',          kw:'속박 · 그림자 · 물질',           file:'15_the_devil',
+   up:'당신을 묶어두는 것을 직면해야 합니다. 두려움의 사슬을 인식하는 것이 해방의 첫 걸음입니다.',
+   rv:'오랫동안 당신을 가두었던 것들에서 벗어나고 있습니다. 자유가 가까워집니다.'},
+  {n:'XVI',kr:'탑',           en:'The Tower',          kw:'붕괴 · 계시 · 전환',             file:'16_the_tower',
+   up:'갑작스러운 변화가 있을 수 있습니다. 무너지는 것은 불필요한 것들. 혼돈 뒤 강한 토대가 옵니다.',
+   rv:'변화를 거부하고 있습니다. 이미 흔들리는 것들을 직면하세요.'},
+  {n:'XVII',kr:'별',          en:'The Star',           kw:'희망 · 치유 · 영감',             file:'17_the_star',
+   up:'어둠이 지나고 별빛이 비춥니다. 희망을 잃지 마세요. 치유의 시간이 찾아오고 있습니다.',
+   rv:'희망을 잃거나 이상과 현실의 괴리로 힘듭니다. 작은 것에서 아름다움을 찾아보세요.'},
+  {n:'XVIII',kr:'달',         en:'The Moon',           kw:'환상 · 무의식 · 불확실',         file:'18_the_moon',
+   up:'모든 것이 명확하지 않을 수 있습니다. 직관을 따르되 환상에 주의하세요.',
+   rv:'혼란이 걷히고 진실이 드러나고 있습니다. 명확성이 찾아올 것입니다.'},
+  {n:'XIX',kr:'태양',         en:'The Sun',            kw:'기쁨 · 성공 · 활력',             file:'19_the_sun',
+   up:'밝고 따뜻한 에너지가 가득합니다. 성공과 기쁨의 날입니다. 자신감을 갖고 빛나세요.',
+   rv:'과도한 낙관이나 자기 과신을 조심하세요. 현실적인 시각이 필요합니다.'},
+  {n:'XX', kr:'심판',         en:'Judgement',          kw:'각성 · 용서 · 부활',             file:'20_judgement',
+   up:'과거를 돌아보고 진정한 나를 받아들일 시간입니다. 자기 용서로 새로운 차원으로 나아가세요.',
+   rv:'스스로를 너무 가혹하게 판단하고 있습니다. 과거의 실수에 얽매이지 마세요.'},
+  {n:'XXI',kr:'세계',         en:'The World',          kw:'완성 · 성취 · 통합',             file:'21_the_world',
+   up:'긴 여정이 아름다운 완성에 이르고 있습니다. 충만함이 가득한 시간입니다.',
+   rv:'완성 직전에 지체되고 있습니다. 마무리를 짓지 못한 것들을 정리하고 전진하세요.'},
+];
+
+const SUMS = [
+  '오늘은 내면의 빛을 따라가세요. 당신이 생각하는 것보다 훨씬 강한 힘이 당신 안에 있습니다.',
+  '변화의 바람이 불어오는 날입니다. 예상치 못한 것들도 결국 더 나은 방향으로 이어집니다.',
+  '오늘은 균형이 핵심입니다. 마음의 소리에 귀 기울이면 무엇을 선택해야 할지 알게 될 것입니다.',
+  '별들이 당신의 편입니다. 작은 용기가 큰 변화를 만들어낼 수 있는 날입니다.',
+  '고요함 속에서 답을 찾을 수 있습니다. 외부의 소음을 잠시 끄고 내면의 지혜를 신뢰하세요.',
+  '인연과 관계가 중요한 날입니다. 소중한 사람에게 먼저 손을 내밀어 보세요.',
+  '끈기가 보상받는 날입니다. 조금만 더 나아가면 터닝포인트가 기다리고 있습니다.',
+];
+
+// ═══ SVG HELPERS ═══
+function rays(cx,cy,r1,r2,n,stroke,sw,op){
+  return Array.from({length:n},(_,i)=>{
+    const a=(i*360/n-90)*Math.PI/180;
+    return `<line x1="${(cx+r1*Math.cos(a)).toFixed(1)}" y1="${(cy+r1*Math.sin(a)).toFixed(1)}" x2="${(cx+r2*Math.cos(a)).toFixed(1)}" y2="${(cy+r2*Math.sin(a)).toFixed(1)}" stroke="${stroke}" stroke-width="${sw}" opacity="${op}"/>`;
+  }).join('');
+}
+function starPoly(cx,cy,r1,r2,n,fill,stroke,sw){
+  const pts=Array.from({length:n*2},(_,i)=>{
+    const r=i%2===0?r1:r2, a=(i*180/n-90)*Math.PI/180;
+    return `${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)}`;
+  }).join(' ');
+  return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+}
+function glow(id,dev){return `<filter id="${id}"><feGaussianBlur stdDeviation="${dev}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;}
+
+// ═══ CARD ART (22 unique SVGs, viewBox="0 0 210 207") ═══
+function cardArt(ci){
+  const p=`p${ci}`;
+  const arts=[
+
+  // 0 ─ The Fool ──────────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#071530"/><stop offset="75%" stop-color="#0f3060"/><stop offset="100%" stop-color="#c06800"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="162" cy="42" r="50" fill="#ff8800" fill-opacity=".14" filter="url(#${p}g)"/>
+  <circle cx="162" cy="42" r="28" fill="#ffd700" fill-opacity=".7" filter="url(#${p}g)"/>
+  <circle cx="162" cy="42" r="20" fill="#ffe566"/><circle cx="162" cy="42" r="13" fill="#fff9d0"/>
+  ${rays(162,42,24,36,14,'#ffd700',2.2,.85)}
+  <polygon points="0,207 0,148 28,100 52,132 78,98 108,136 138,103 168,134 195,112 210,120 210,207" fill="#050c18"/>
+  <polygon points="0,207 0,168 22,130 46,158 68,128 92,155 118,133 148,162 180,148 210,155 210,207" fill="#020810" opacity=".9"/>
+  <path d="M40,207 L40,172 L60,158 L68,150 L80,154 L76,144 L110,150 L210,145 L210,207Z" fill="#020810"/>
+  <circle cx="73" cy="134" r="5.5" fill="#f5cb7a"/>
+  <line x1="73" y1="140" x2="73" y2="162" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="73" y1="149" x2="59" y2="158" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="73" y1="147" x2="89" y2="142" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="73" y1="162" x2="63" y2="178" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="73" y1="162" x2="83" y2="177" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="88" y1="141" x2="100" y2="179" stroke="#7a4800" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="100" cy="137" r="5" fill="#9a6200" opacity=".85"/>
+  <ellipse cx="55" cy="168" rx="8" ry="4" fill="#c09050"/>
+  <circle cx="63" cy="164" r="4.5" fill="#c09050"/>
+  <line x1="64" y1="162" x2="73" y2="158" stroke="#c09050" stroke-width="1.5"/>
+  <g fill="#fff"><circle cx="18" cy="16" r="1.5" opacity=".9"/><circle cx="52" cy="8" r="1.2" opacity=".7"/><circle cx="92" cy="22" r="1" opacity=".6"/><circle cx="28" cy="56" r="1.3" opacity=".8"/><circle cx="110" cy="18" r="1.5" opacity=".65"/></g>`,
+
+  // I ─ The Magician ──────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#5a0015"/><stop offset="60%" stop-color="#280028"/><stop offset="100%" stop-color="#080010"/>
+    </radialGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="80" r="65" fill="#cc0030" fill-opacity=".12" filter="url(#${p}g)"/>
+  <path d="M55,80 C55,35 88,25 105,28 C122,25 155,35 155,80 C155,80 145,70 105,70 C65,70 55,80 55,80Z" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity=".5"/>
+  <path d="M55,80 C55,125 88,115 105,112 C122,115 155,125 155,80" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity=".5"/>
+  <ellipse cx="105" cy="80" rx="50" ry="10" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".4"/>
+  <text x="105" y="84" text-anchor="middle" font-size="30" fill="#c9a84c" fill-opacity=".85" font-family="serif">∞</text>
+  <line x1="105" y1="90" x2="105" y2="140" stroke="#c9a84c" stroke-width="2" opacity=".8"/>
+  <ellipse cx="105" cy="145" rx="30" ry="4" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".4"/>
+  <text x="78" y="163" font-size="13" fill="#c9a84c" fill-opacity=".8" font-family="serif">☽</text>
+  <text x="95" y="165" font-size="13" fill="#c9a84c" fill-opacity=".8" font-family="serif">⚔</text>
+  <text x="112" y="163" font-size="11" fill="#c9a84c" fill-opacity=".8" font-family="serif">⛤</text>
+  <text x="128" y="163" font-size="12" fill="#c9a84c" fill-opacity=".8" font-family="serif">🜁</text>
+  <circle cx="105" cy="40" r="7" fill="#ffd700" opacity=".9" filter="url(#${p}g)"/>
+  <line x1="105" y1="20" x2="105" y2="48" stroke="#ffd700" stroke-width="2.5" opacity=".85"/>
+  <circle cx="105" cy="103" r="12" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <g fill="#fff" opacity=".6"><circle cx="30" cy="20" r="1.3"/><circle cx="180" cy="15" r="1.5"/><circle cx="190" cy="60" r="1"/><circle cx="20" cy="90" r="1.3"/><circle cx="195" cy="140" r="1"/></g>`,
+
+  // II ─ The High Priestess ───────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030818"/><stop offset="100%" stop-color="#0c0a30"/>
+    </linearGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="72" r="60" fill="#1a0a50" fill-opacity=".6" filter="url(#${p}g)"/>
+  <circle cx="105" cy="60" r="38" fill="#0a0830" opacity=".8"/>
+  <circle cx="105" cy="60" r="38" fill="none" stroke="#aab0ff" stroke-width=".8" opacity=".6"/>
+  <path d="M68,60 A37,37 0 0,1 142,60 A20,20 0 0,0 68,60Z" fill="#c0c8ff" fill-opacity=".85"/>
+  <circle cx="105" cy="60" r="15" fill="#e0e4ff" opacity=".9"/>
+  <circle cx="105" cy="60" r="8" fill="#fff" opacity=".95"/>
+  <rect x="38" y="35" width="14" height="110" rx="4" fill="#1a0a30" stroke="#c9a84c" stroke-width="1.2"/>
+  <rect x="158" y="35" width="14" height="110" rx="4" fill="#1a0a30" stroke="#c9a84c" stroke-width="1.2"/>
+  <text x="43" y="75" font-size="10" fill="#c9a84c" opacity=".8" font-family="Cinzel,serif" font-weight="bold">B</text>
+  <text x="163" y="75" font-size="10" fill="#c9a84c" opacity=".8" font-family="Cinzel,serif" font-weight="bold">J</text>
+  <line x1="52" y1="145" x2="158" y2="145" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <path d="M52,145 Q70,160 88,155 Q105,150 122,155 Q140,160 158,145" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".5"/>
+  <circle cx="105" cy="25" r="8" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity=".8"/>
+  ${rays(105,25,11,17,6,'#c9a84c',1.2,.7)}
+  ${starPoly(105,25,5,3,5,'#c9a84c','none',0)}
+  <g fill="#aab0ff" opacity=".7"><circle cx="25" cy="20" r="1.8"/><circle cx="180" cy="25" r="1.5"/><circle cx="195" cy="80" r="1.2"/><circle cx="18" cy="100" r="1.5"/><circle cx="198" cy="150" r="1.8"/></g>
+  <circle cx="65" cy="105" r="12" fill="none" stroke="#aab0ff" stroke-width=".6" opacity=".3"/>
+  <circle cx="145" cy="105" r="12" fill="none" stroke="#aab0ff" stroke-width=".6" opacity=".3"/>`,
+
+  // III ─ The Empress ─────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2=".3" y2="1">
+      <stop offset="0%" stop-color="#062010"/><stop offset="100%" stop-color="#1a3808"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="100" r="75" fill="#1a4a10" fill-opacity=".25" filter="url(#${p}g)"/>
+  <text x="105" y="115" text-anchor="middle" font-size="62" fill="#c9a84c" fill-opacity=".18" font-family="serif" filter="url(#${p}g)">♀</text>
+  <text x="105" y="115" text-anchor="middle" font-size="62" fill="#c9a84c" fill-opacity=".9" font-family="serif">♀</text>
+  <circle cx="105" cy="75" r="30" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".6"/>
+  ${Array.from({length:12},(_,i)=>{const a=(i*30-90)*Math.PI/180;const x=(105+26*Math.cos(a)).toFixed(1),y=(75+26*Math.sin(a)).toFixed(1);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd700" opacity=".9" filter="url(#${p}g)"/>`;}).join('')}
+  <path d="M60,155 L65,125 Q68,110 78,115 L82,155Z" fill="#6a9a30" opacity=".8"/>
+  <path d="M78,158 L80,128 Q83,113 93,118 L95,158Z" fill="#5a8a28" opacity=".8"/>
+  <path d="M95,160 L96,130 Q99,115 109,120 L108,160Z" fill="#6a9a30" opacity=".8"/>
+  <line x1="60" y1="158" x2="80" y2="138" stroke="#8ab840" stroke-width="1.5" opacity=".7"/>
+  <line x1="80" y1="158" x2="100" y2="138" stroke="#8ab840" stroke-width="1.5" opacity=".7"/>
+  <path d="M130,165 Q145,130 160,150 Q175,130 188,165Z" fill="#1a5a10" opacity=".7"/>
+  <path d="M125,165 Q130,145 142,155 Q148,138 158,150" fill="none" stroke="#4a8a28" stroke-width="2" opacity=".7"/>
+  <path d="M140,165 Q148,135 170,160" fill="none" stroke="#5a9a30" stroke-width="2" opacity=".6"/>
+  <circle cx="165" cy="40" r="12" fill="#8ab840" fill-opacity=".3" filter="url(#${p}g)"/>
+  <g fill="#ffd700" opacity=".6"><circle cx="20" cy="18" r="1.5"/><circle cx="190" cy="22" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="15" cy="120" r="1.5"/></g>`,
+
+  // IV ─ The Emperor ──────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#380505"/><stop offset="60%" stop-color="#1a0808"/><stop offset="100%" stop-color="#101020"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="90" r="70" fill="#8b0000" fill-opacity=".12" filter="url(#${p}g)"/>
+  <rect x="55" y="70" width="100" height="130" rx="5" fill="#180510" stroke="#c9a84c" stroke-width="1.2"/>
+  <rect x="62" y="78" width="86" height="115" rx="3" fill="none" stroke="#c9a84c" stroke-width=".6" opacity=".5"/>
+  <path d="M55,70 L40,55 L50,70Z" fill="#c9a84c" opacity=".7"/>
+  <path d="M155,70 L170,55 L160,70Z" fill="#c9a84c" opacity=".7"/>
+  <circle cx="43" cy="50" r="10" fill="#180510" stroke="#c9a84c" stroke-width="1.5"/>
+  <circle cx="167" cy="50" r="10" fill="#180510" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="38" y1="45" x2="48" y2="55" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <line x1="48" y1="45" x2="38" y2="55" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <line x1="162" y1="45" x2="172" y2="55" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <line x1="172" y1="45" x2="162" y2="55" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <path d="M83,95 L83,75 L105,68 L127,75 L127,95Z" fill="#c9a84c" fill-opacity=".2" stroke="#c9a84c" stroke-width="1.2"/>
+  ${rays(105,82,6,14,8,'#c9a84c',1,.6)}
+  <circle cx="105" cy="82" r="5" fill="#c9a84c" opacity=".9"/>
+  <rect x="102" y="95" width="6" height="50" rx="2" fill="#c9a84c" opacity=".8"/>
+  <path d="M96,95 Q105,88 114,95" fill="none" stroke="#c9a84c" stroke-width="2"/>
+  <line x1="88" y1="105" x2="78" y2="108" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="122" y1="105" x2="132" y2="108" stroke="#c9a84c" stroke-width="1.5"/>
+  <polygon points="55,200 80,175 105,200 130,175 155,200" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <g fill="#c9a84c" opacity=".35"><circle cx="20" cy="30" r="1.5"/><circle cx="190" cy="18" r="1.3"/><circle cx="200" cy="70" r="1"/><circle cx="16" cy="130" r="1.5"/></g>`,
+
+  // V ─ The Hierophant ────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f0030"/><stop offset="100%" stop-color="#1e0840"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="85" r="70" fill="#3a0070" fill-opacity=".2" filter="url(#${p}g)"/>
+  <line x1="105" y1="15" x2="105" y2="180" stroke="#c9a84c" stroke-width="3.5" stroke-linecap="round" opacity=".9"/>
+  <line x1="75" y1="75" x2="135" y2="75" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
+  <line x1="80" y1="100" x2="130" y2="100" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+  <line x1="85" y1="122" x2="125" y2="122" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>
+  <circle cx="105" cy="35" r="18" fill="#0f0030" stroke="#c9a84c" stroke-width="1.5" opacity=".9"/>
+  <circle cx="105" cy="35" r="12" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".7"/>
+  ${rays(105,35,5,9,8,'#c9a84c',1,.6)}
+  <circle cx="105" cy="35" r="4" fill="#c9a84c" opacity=".9"/>
+  <path d="M62,160 L72,155 L75,170 L67,175Z M148,160 L138,155 L135,170 L143,175Z" fill="#c9a84c" opacity=".5"/>
+  <line x1="75" y1="163" x2="135" y2="163" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <path d="M82,163 L82,148 L90,140 L90,148" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".6"/>
+  <path d="M128,163 L128,148 L120,140 L120,148" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".6"/>
+  <circle cx="82" cy="137" r="6" fill="#180040" stroke="#c9a84c" stroke-width="1"/>
+  <circle cx="128" cy="137" r="6" fill="#180040" stroke="#c9a84c" stroke-width="1"/>
+  ${starPoly(80,136,4,2,5,'#c9a84c','none',0)}
+  ${starPoly(128,136,4,2,5,'#c9a84c','none',0)}
+  <g fill="#a060ff" opacity=".6"><circle cx="22" cy="20" r="1.5"/><circle cx="185" cy="18" r="1.3"/><circle cx="198" cy="80" r="1"/><circle cx="18" cy="120" r="1.5"/></g>`,
+
+  // VI ─ The Lovers ───────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1535"/><stop offset="55%" stop-color="#1a0830"/><stop offset="100%" stop-color="#280a10"/>
+    </linearGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="55" r="55" fill="#ff6090" fill-opacity=".08" filter="url(#${p}g)"/>
+  <circle cx="105" cy="28" r="22" fill="#ff8a30" fill-opacity=".2" filter="url(#${p}g)"/>
+  ${rays(105,28,26,40,16,'#ffd700',1.5,.6)}
+  <circle cx="105" cy="28" r="14" fill="#ffe566" opacity=".85"/>
+  <path d="M60,55 Q58,35 80,38 Q90,30 105,42 Q120,30 130,38 Q152,35 150,55 Q148,80 105,100 Q62,80 60,55Z" fill="#ff6090" fill-opacity=".25" stroke="#ff8ab0" stroke-width="1.2" filter="url(#${p}g)"/>
+  <path d="M72,60 Q72,48 80,50 Q86,44 92,52 Q98,44 104,52 Q104,48 112,50 Q112,44 118,52 Q124,44 128,52 Q138,48 138,60 Q136,75 105,90 Q74,75 72,60Z" fill="#ff6090" fill-opacity=".6" stroke="#ff90c0" stroke-width=".8"/>
+  <circle cx="78" cy="145" r="7" fill="#f5cb7a"/>
+  <line x1="78" y1="152" x2="78" y2="178" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="78" y1="161" x2="66" y2="170" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="78" y1="159" x2="91" y2="166" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="130" cy="145" r="7" fill="#f5cb7a"/>
+  <line x1="130" y1="152" x2="130" y2="178" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="130" y1="161" x2="118" y2="170" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="130" y1="159" x2="143" y2="166" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="91" y1="166" x2="118" y2="170" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>
+  <g fill="#ff90c0" opacity=".6"><circle cx="22" cy="20" r="1.5"/><circle cx="188" cy="15" r="1.3"/><circle cx="20" cy="80" r="1"/><circle cx="195" cy="90" r="1.5"/></g>`,
+
+  // VII ─ The Chariot ─────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030820"/><stop offset="100%" stop-color="#080e35"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <rect x="45" y="55" width="120" height="90" rx="6" fill="#0a0d28" stroke="#c9a84c" stroke-width="1.5"/>
+  <rect x="52" y="62" width="106" height="76" rx="4" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".5"/>
+  ${starPoly(105,40,18,8,8,'none','#c9a84c',1.2)}
+  ${starPoly(105,40,10,4,8,'#c9a84c','none',0)}
+  <line x1="45" y1="55" x2="45" y2="145" stroke="#c9a84c" stroke-width="2" opacity=".7"/>
+  <line x1="165" y1="55" x2="165" y2="145" stroke="#c9a84c" stroke-width="2" opacity=".7"/>
+  <ellipse cx="72" cy="145" rx="18" ry="20" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity=".7"/>
+  <line x1="72" y1="125" x2="72" y2="165" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="54" y1="145" x2="90" y2="145" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="57" y1="129" x2="87" y2="161" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="87" y1="129" x2="57" y2="161" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <ellipse cx="138" cy="145" rx="18" ry="20" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity=".7"/>
+  <line x1="138" y1="125" x2="138" y2="165" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="120" y1="145" x2="156" y2="145" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="123" y1="129" x2="153" y2="161" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <line x1="153" y1="129" x2="123" y2="161" stroke="#c9a84c" stroke-width=".8" opacity=".5"/>
+  <ellipse cx="65" cy="175" rx="12" ry="8" fill="#e0e0e0" opacity=".5"/>
+  <circle cx="60" cy="173" r="4" fill="#e0e0e0" opacity=".7"/>
+  <ellipse cx="145" cy="175" rx="12" ry="8" fill="#202020" opacity=".8"/>
+  <circle cx="150" cy="173" r="4" fill="#202020" opacity=".9"/>
+  <g fill="#c9a84c" opacity=".7">${Array.from({length:9},(_,i)=>`<circle cx="${30+i*18}" cy="18" r="${i%2===0?2:1.2}"/>`).join('')}</g>
+  <g fill="#fff" opacity=".5"><circle cx="18" cy="50" r="1.3"/><circle cx="192" cy="45" r="1.5"/><circle cx="200" cy="110" r="1"/></g>`,
+
+  // VIII ─ Strength ───────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#3a1500"/><stop offset="100%" stop-color="#0e0600"/>
+    </radialGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="90" r="75" fill="#cc5500" fill-opacity=".1" filter="url(#${p}g)"/>
+  <text x="105" y="84" text-anchor="middle" font-size="28" fill="#c9a84c" fill-opacity=".85" font-family="serif">∞</text>
+  <circle cx="105" cy="84" r="45" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".25"/>
+  <ellipse cx="105" cy="120" rx="40" ry="30" fill="#3a1500" fill-opacity=".5" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <path d="M75,108 Q82,98 92,102 Q98,90 105,96 Q112,90 118,102 Q128,98 135,108 Q130,125 105,135 Q80,125 75,108Z" fill="#cc6600" fill-opacity=".5" stroke="#ff8c00" stroke-width="1.2"/>
+  <circle cx="75" cy="106" r="9" fill="#e07000" fill-opacity=".4"/>
+  <circle cx="135" cy="106" r="9" fill="#e07000" fill-opacity=".4"/>
+  <path d="M65,98 Q65,80 78,82 Q90,72 105,78 Q120,72 132,82 Q145,80 145,98" fill="none" stroke="#f0a030" stroke-width="1.8" opacity=".7"/>
+  <path d="M70,160 Q80,145 95,150 Q105,140 115,150 Q130,145 140,160" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".6"/>
+  ${Array.from({length:7},(_,i)=>`<circle cx="${70+i*11}" cy="${157+Math.sin(i)*4}" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>`).join('')}
+  <circle cx="105" cy="62" r="6" fill="#ffd700" opacity=".9" filter="url(#${p}g)"/>
+  <g fill="#ff8c00" opacity=".5"><circle cx="20" cy="20" r="1.5"/><circle cx="190" cy="15" r="1.3"/><circle cx="200" cy="75" r="1"/><circle cx="15" cy="140" r="1.5"/></g>`,
+
+  // IX ─ The Hermit ───────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#020508"/><stop offset="100%" stop-color="#0a0e18"/>
+    </linearGradient>
+    ${glow(`${p}g`,8)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <polygon points="30,207 105,40 180,207" fill="#0d1520" opacity=".8"/>
+  <polygon points="0,207 70,85 145,207" fill="#080d14" opacity=".7"/>
+  <polygon points="65,207 140,60 210,207" fill="#0d1520" opacity=".8"/>
+  <polygon points="90,207 155,90 210,160 210,207" fill="#060a10" opacity=".6"/>
+  <circle cx="105" cy="95" r="30" fill="#c9a84c" fill-opacity=".12" filter="url(#${p}g)"/>
+  <circle cx="130" cy="85" r="18" fill="#c9a84c" fill-opacity=".08" filter="url(#${p}g)"/>
+  <rect x="122" y="75" width="22" height="28" rx="3" fill="#c9a84c" fill-opacity=".12" filter="url(#${p}g)"/>
+  <rect x="125" y="78" width="16" height="22" rx="2" fill="#ffe566" fill-opacity=".7"/>
+  ${starPoly(133,89,8,4,6,'#ffe566','#ffd700',.8)}
+  <rect x="127" y="80" width="12" height="16" rx="1" fill="none" stroke="#c9a84c" stroke-width=".8"/>
+  <circle cx="85" cy="95" r="20" fill="none" stroke="#404060" stroke-width="1" opacity=".6"/>
+  <line x1="72" y1="100" x2="78" y2="110" stroke="#606080" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="78" y1="90" x2="85" y2="78" stroke="#808090" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70,88 Q72,80 82,75 Q90,70 95,78" fill="none" stroke="#707080" stroke-width="2.5"/>
+  <line x1="70" y1="102" x2="58" y2="140" stroke="#606070" stroke-width="2.5" stroke-linecap="round"/>
+  <g fill="#aaa8d0" opacity=".5"><circle cx="18" cy="18" r="1.5"/><circle cx="188" cy="22" r="1.3"/><circle cx="200" cy="100" r="1"/><circle cx="15" cy="130" r="1.5"/><circle cx="50" cy="40" r="1"/></g>`,
+
+  // X ─ Wheel of Fortune ─────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#18054a"/><stop offset="100%" stop-color="#060012"/>
+    </radialGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="105" r="72" fill="#2a0878" fill-opacity=".15" filter="url(#${p}g)"/>
+  <circle cx="105" cy="105" r="68" fill="none" stroke="#c9a84c" stroke-width="1.8" opacity=".7"/>
+  <circle cx="105" cy="105" r="55" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".5"/>
+  <circle cx="105" cy="105" r="40" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".6"/>
+  <circle cx="105" cy="105" r="18" fill="#1a0a40" stroke="#c9a84c" stroke-width="1.5" opacity=".8"/>
+  ${Array.from({length:8},(_,i)=>{const a=(i*45-90)*Math.PI/180;return `<line x1="${(105+20*Math.cos(a)).toFixed(1)}" y1="${(105+20*Math.sin(a)).toFixed(1)}" x2="${(105+54*Math.cos(a)).toFixed(1)}" y2="${(105+54*Math.sin(a)).toFixed(1)}" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>`;}).join('')}
+  ${['T','O','R','A'].map((l,i)=>{const a=(i*90-45)*Math.PI/180;return `<text x="${(105+47*Math.cos(a)).toFixed(1)}" y="${(105+47*Math.sin(a)+4).toFixed(1)}" text-anchor="middle" font-size="10" fill="#c9a84c" fill-opacity=".9" font-family="Cinzel,serif">${l}</text>`;}).join('')}
+  ${Array.from({length:8},(_,i)=>{const a=(i*45)*Math.PI/180;return `<circle cx="${(105+62*Math.cos(a)).toFixed(1)}" cy="${(105+62*Math.sin(a)).toFixed(1)}" r="2.5" fill="#c9a84c" opacity=".6"/>`;}).join('')}
+  <circle cx="105" cy="36" r="9" fill="#1a0a40" stroke="#c9a84c" stroke-width="1.2"/>
+  <path d="M99,38 L105,30 L111,38Z" fill="#c9a84c" opacity=".8"/>
+  <circle cx="105" cy="10" r="4" fill="#ffd700" opacity=".8" filter="url(#${p}g)"/>
+  <g fill="#9060ff" opacity=".6"><circle cx="18" cy="18" r="1.5"/><circle cx="192" cy="20" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="15" cy="160" r="1.5"/></g>`,
+
+  // XI ─ Justice ──────────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#04091f"/><stop offset="100%" stop-color="#0a0530"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="90" r="65" fill="#0a1560" fill-opacity=".2" filter="url(#${p}g)"/>
+  <rect x="35" y="30" width="15" height="165" rx="4" fill="#100830" stroke="#c9a84c" stroke-width="1.2" opacity=".8"/>
+  <rect x="160" y="30" width="15" height="165" rx="4" fill="#100830" stroke="#c9a84c" stroke-width="1.2" opacity=".8"/>
+  <line x1="50" y1="120" x2="160" y2="120" stroke="#c9a84c" stroke-width=".8" opacity=".3"/>
+  <line x1="105" y1="55" x2="105" y2="175" stroke="#c9a84c" stroke-width="2" opacity=".8"/>
+  <line x1="68" y1="90" x2="142" y2="90" stroke="#c9a84c" stroke-width="1.5" opacity=".8"/>
+  <ellipse cx="72" cy="95" rx="24" ry="14" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <ellipse cx="138" cy="95" rx="24" ry="14" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <line x1="62" y1="96" x2="80" y2="120" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <line x1="82" y1="96" x2="62" y2="120" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <line x1="128" y1="96" x2="148" y2="120" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <line x1="148" y1="96" x2="128" y2="120" stroke="#c9a84c" stroke-width=".8" opacity=".4"/>
+  <line x1="105" y1="55" x2="100" y2="35" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+  <path d="M92,30 L100,20 L108,30Z" fill="#c9a84c" opacity=".9"/>
+  <circle cx="105" cy="55" r="5" fill="#c9a84c" opacity=".9"/>
+  <g fill="#6080ff" opacity=".6"><circle cx="20" cy="20" r="1.5"/><circle cx="190" cy="18" r="1.3"/><circle cx="200" cy="75" r="1"/><circle cx="18" cy="150" r="1.5"/></g>`,
+
+  // XII ─ The Hanged Man ──────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#051510"/><stop offset="100%" stop-color="#0a1a20"/>
+    </linearGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="120" r="65" fill="#0a3028" fill-opacity=".2" filter="url(#${p}g)"/>
+  <rect x="52" y="20" width="12" height="155" rx="5" fill="#2a1800" stroke="#6a4a20" stroke-width="1.2"/>
+  <rect x="140" y="20" width="12" height="155" rx="5" fill="#2a1800" stroke="#6a4a20" stroke-width="1.2"/>
+  <rect x="52" y="35" width="106" height="12" rx="5" fill="#2a1800" stroke="#6a4a20" stroke-width="1.2"/>
+  <line x1="105" y1="47" x2="105" y2="70" stroke="#8a6a30" stroke-width="2"/>
+  <circle cx="105" cy="78" r="6" fill="#f5cb7a"/>
+  <circle cx="105" cy="78" r="12" fill="#c9a84c" fill-opacity=".2" filter="url(#${p}g)"/>
+  <line x1="105" y1="84" x2="105" y2="112" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="105" y1="95" x2="90" y2="108" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="90" y1="108" x2="75" y2="98" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="105" y1="95" x2="120" y2="108" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="120" y1="108" x2="135" y2="98" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="105" y1="112" x2="92" y2="130" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="92" y1="130" x2="88" y2="150" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="105" y1="112" x2="105" y2="145" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="105" cy="150" r="3.5" fill="#c87530"/>
+  <line x1="92" y1="130" x2="110" y2="138" stroke="#c87530" stroke-width="2"/>
+  <g fill="#80c0a0" opacity=".5"><circle cx="18" cy="20" r="1.5"/><circle cx="190" cy="15" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="16" cy="150" r="1.5"/></g>`,
+
+  // XIII ─ Death ──────────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030303"/><stop offset="60%" stop-color="#0c0005"/><stop offset="100%" stop-color="#1a0520"/>
+    </linearGradient>
+    <radialGradient id="${p}hr" cx="50%" cy="100%" r="50%">
+      <stop offset="0%" stop-color="#cc2200" stop-opacity=".4"/><stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <rect width="210" height="207" fill="url(#${p}hr)"/>
+  <circle cx="105" cy="160" r="50" fill="#cc2200" fill-opacity=".12" filter="url(#${p}g)"/>
+  <ellipse cx="105" cy="190" rx="100" ry="40" fill="#8b0000" fill-opacity=".3"/>
+  <circle cx="75" cy="155" r="20" fill="#e0e0e0" fill-opacity=".9"/>
+  <circle cx="75" cy="155" r="16" fill="#fff" fill-opacity=".95"/>
+  <ellipse cx="75" cy="148" rx="5" ry="6" fill="#333" opacity=".8"/>
+  <ellipse cx="75" cy="162" rx="8" ry="3" fill="#333" opacity=".6"/>
+  <line x1="67" y1="151" x2="83" y2="151" stroke="#333" stroke-width="1.5" opacity=".8"/>
+  <ellipse cx="105" cy="175" rx="28" ry="18" fill="#f0f0f0" fill-opacity=".7"/>
+  <ellipse cx="115" cy="170" rx="18" ry="12" fill="#e8e8e8" fill-opacity=".7"/>
+  <line x1="105" y1="157" x2="100" y2="135" stroke="#888" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="100" y1="145" x2="88" y2="142" stroke="#888" stroke-width="3" stroke-linecap="round"/>
+  <line x1="100" y1="142" x2="112" y2="138" stroke="#888" stroke-width="3" stroke-linecap="round"/>
+  <path d="M115,55 L120,35 L125,55Z M110,50 L130,50Z" fill="white" fill-opacity=".8"/>
+  <line x1="118" y1="57" x2="118" y2="120" stroke="#d8d8d8" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M105,120 L118,115 L131,120Z" fill="white" fill-opacity=".6"/>
+  <circle cx="170" cy="60" r="9" fill="none" stroke="#cc2200" stroke-width="2" opacity=".7"/>
+  <line x1="162" y1="52" x2="178" y2="68" stroke="#cc2200" stroke-width="1.5" opacity=".7"/>
+  <line x1="162" y1="68" x2="178" y2="52" stroke="#cc2200" stroke-width="1.5" opacity=".7"/>
+  <g fill="#808080" opacity=".5"><circle cx="20" cy="18" r="1.5"/><circle cx="188" cy="12" r="1.3"/><circle cx="200" cy="65" r="1"/></g>`,
+
+  // XIV ─ Temperance ──────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#040e28"/><stop offset="100%" stop-color="#081830"/>
+    </linearGradient>
+    ${glow(`${p}g`,5)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="80" r="65" fill="#2040a0" fill-opacity=".1" filter="url(#${p}g)"/>
+  <path d="M35,207 Q55,150 80,160 Q105,170 105,180 Q105,170 130,160 Q155,150 175,207Z" fill="#0a1840" opacity=".8"/>
+  <path d="M0,207 Q20,175 50,185 Q80,195 90,207Z" fill="#0a1840" opacity=".6"/>
+  <path d="M120,207 Q140,195 170,190 Q195,185 210,207Z" fill="#0a1840" opacity=".6"/>
+  <path d="M55,185 Q60,165 80,170 Q90,155 105,175 Q120,155 130,170 Q150,165 155,185" fill="none" stroke="#4080ff" stroke-width="1.2" opacity=".6"/>
+  <ellipse cx="75" cy="100" rx="18" ry="25" fill="#0a1840" stroke="#8ab0ff" stroke-width="1.5" opacity=".8"/>
+  <ellipse cx="135" cy="100" rx="18" ry="25" fill="#0a1840" stroke="#8ab0ff" stroke-width="1.5" opacity=".8"/>
+  <path d="M75,88 Q90,62 105,70 Q120,62 135,88" fill="none" stroke="#8ab0ff" stroke-width="2" stroke-dasharray="6,3" opacity=".8"/>
+  <circle cx="105" cy="70" r="5" fill="#8ab0ff" fill-opacity=".8" filter="url(#${p}g)"/>
+  <circle cx="105" cy="50" r="14" fill="#4060d0" fill-opacity=".3" filter="url(#${p}g)"/>
+  ${rays(105,50,18,28,8,'#8ab0ff',1.2,.7)}
+  <circle cx="105" cy="50" r="10" fill="#c0d8ff" opacity=".85"/>
+  <circle cx="105" cy="50" r="5" fill="white"/>
+  <path d="M95,40 L105,30 L115,40 L115,60 L95,60Z" fill="none" stroke="#8ab0ff" stroke-width=".8" opacity=".6"/>
+  <g fill="#8ab0ff" opacity=".6"><circle cx="20" cy="18" r="1.5"/><circle cx="188" cy="22" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="15" cy="155" r="1.5"/></g>`,
+
+  // XV ─ The Devil ────────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#3a0000"/><stop offset="100%" stop-color="#080000"/>
+    </radialGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="75" r="70" fill="#880000" fill-opacity=".12" filter="url(#${p}g)"/>
+  ${starPoly(105,68,38,16,5,'none','#cc0000',1.5)}
+  <line x1="105" y1="30" x2="105" y2="106" stroke="#cc0000" stroke-width=".8" opacity=".6"/>
+  <line x1="67" y1="54" x2="143" y2="54" stroke="#cc0000" stroke-width=".8" opacity=".6"/>
+  <path d="M105,30 L143,54 L129,98 L81,98 L67,54Z" fill="none" stroke="#cc0000" stroke-width="1" opacity=".6"/>
+  <path d="M82,35 Q105,55 128,35 Q140,60 128,72 Q105,82 82,72 Q70,60 82,35Z" fill="none" stroke="#cc0000" stroke-width="1.2" opacity=".4"/>
+  <line x1="88" y1="28" x2="82" y2="15" stroke="#cc0000" stroke-width="1.5" opacity=".8"/>
+  <line x1="122" y1="28" x2="128" y2="15" stroke="#cc0000" stroke-width="1.5" opacity=".8"/>
+  <circle cx="78" cy="145" r="7" fill="#404040" opacity=".8"/>
+  <circle cx="132" cy="145" r="7" fill="#404040" opacity=".8"/>
+  <path d="M78,152 Q78,165 70,172" stroke="#808080" stroke-width="1.5" fill="none" opacity=".7"/>
+  <path d="M132,152 Q132,165 140,172" stroke="#808080" stroke-width="1.5" fill="none" opacity=".7"/>
+  <ellipse cx="78" cy="145" rx="12" ry="5" fill="none" stroke="#808080" stroke-width="1" opacity=".6"/>
+  <ellipse cx="132" cy="145" rx="12" ry="5" fill="none" stroke="#808080" stroke-width="1" opacity=".6"/>
+  <path d="M80,150 L105,155 L130,150" fill="none" stroke="#808080" stroke-width="1.2" stroke-dasharray="4,3" opacity=".6"/>
+  <circle cx="105" cy="115" r="8" fill="#cc0000" fill-opacity=".5" filter="url(#${p}g)"/>
+  <line x1="105" y1="107" x2="105" y2="85" stroke="#cc4400" stroke-width="2" opacity=".7"/>
+  <g fill="#cc0000" opacity=".4"><circle cx="20" cy="20" r="1.5"/><circle cx="188" cy="15" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="15" cy="150" r="1.5"/></g>`,
+
+  // XVI ─ The Tower ───────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050505"/><stop offset="100%" stop-color="#100005"/>
+    </linearGradient>
+    ${glow(`${p}g`,7)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="80" r="60" fill="#ff3300" fill-opacity=".07" filter="url(#${p}g)"/>
+  <rect x="75" y="70" width="60" height="130" rx="3" fill="#1a0808" stroke="#404040" stroke-width="1.5"/>
+  <rect x="80" y="75" width="50" height="120" rx="2" fill="none" stroke="#303030" stroke-width=".8" opacity=".5"/>
+  <path d="M72,70 L105,40 L138,70Z" fill="#1a0808" stroke="#404040" stroke-width="1.5"/>
+  <circle cx="105" cy="50" r="10" fill="#c9a84c" fill-opacity=".3"/>
+  <circle cx="105" cy="50" r="6" fill="#c9a84c" opacity=".7"/>
+  <path d="M145,20 L170,80 L155,75 L165,130 L148,118 L150,145 L135,130 L138,100 L125,110 L130,75 L115,88 L120,45 L105,60 L110,25Z" fill="#ffa500" fill-opacity=".9" filter="url(#${p}g)"/>
+  <path d="M145,20 L170,80 L155,75 L165,130 L148,118 L150,145 L135,130 L138,100 L125,110 L130,75 L115,88 L120,45 L105,60 L110,25Z" fill="#ff6600" fill-opacity=".7"/>
+  <path d="M68,45 L75,55 L138,30Z" fill="#c9a84c" opacity=".7" filter="url(#${p}g)"/>
+  <circle cx="68" cy="130" r="8" fill="#c87530" opacity=".7"/>
+  <line x1="68" y1="130" x2="60" y2="150" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="68" y1="138" x2="56" y2="145" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="68" y1="138" x2="80" y2="148" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="142" cy="115" r="8" fill="#c87530" opacity=".7"/>
+  <line x1="142" y1="115" x2="155" y2="140" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="142" y1="123" x2="130" y2="133" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="142" y1="125" x2="155" y2="135" stroke="#c87530" stroke-width="2.5" stroke-linecap="round"/>
+  <g fill="#ff6600" opacity=".6">${Array.from({length:6},(_,i)=>`<circle cx="${60+i*18}" cy="${40+i*12}" r="2.5"/>`).join('')}</g>`,
+
+  // XVII ─ The Star ───────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030818"/><stop offset="100%" stop-color="#060a25"/>
+    </linearGradient>
+    ${glow(`${p}g`,7)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  ${starPoly(105,68,36,16,8,'#c9a84c','#ffd700',1.5)}
+  ${starPoly(105,68,30,12,8,'none','#ffd700',1)}
+  <circle cx="105" cy="68" r="12" fill="#ffd700" fill-opacity=".6" filter="url(#${p}g)"/>
+  <circle cx="105" cy="68" r="7" fill="#ffe566"/>
+  ${rays(105,68,40,52,8,'#c9a84c',1.2,.6)}
+  ${[[50,22],[160,22],[28,55],[182,48],[22,115],[188,110],[42,168],[170,162]].map((pos,i)=>{const r=i<2?6:i<4?4:3;return `${starPoly(pos[0],pos[1],r,r/2.5,5,'#c9a84c','none',0)}<circle cx="${pos[0]}" cy="${pos[1]}" r="2" fill="#c9a84c" opacity=".4" filter="url(#${p}g)"/>`;}).join('')}
+  <path d="M35,200 Q45,155 68,165 Q78,145 105,185" fill="none" stroke="#4080ff" stroke-width="1.5" opacity=".6"/>
+  <path d="M105,185 Q132,145 145,165 Q168,155 178,200" fill="none" stroke="#4080ff" stroke-width="1.5" opacity=".6"/>
+  <ellipse cx="75" cy="100" rx="16" ry="22" fill="#0a1840" stroke="#8ab0ff" stroke-width="1.2" opacity=".7"/>
+  <ellipse cx="135" cy="100" rx="16" ry="22" fill="#0a1840" stroke="#8ab0ff" stroke-width="1.2" opacity=".7"/>
+  <path d="M75,92 Q90,72 105,80 Q120,72 135,92" fill="none" stroke="#8ab0ff" stroke-width="1.8" stroke-dasharray="5,2.5" opacity=".8"/>`,
+
+  // XVIII ─ The Moon ──────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#0c0828"/><stop offset="100%" stop-color="#04041a"/>
+    </radialGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="55" r="50" fill="#3020a0" fill-opacity=".15" filter="url(#${p}g)"/>
+  <circle cx="105" cy="55" r="35" fill="#d0d4ff" fill-opacity=".85"/>
+  <circle cx="88" cy="48" r="26" fill="#080820"/>
+  <circle cx="105" cy="55" r="35" fill="none" stroke="#a0a8e0" stroke-width="1" opacity=".5"/>
+  ${rays(105,55,38,48,32,'#a0a8e0',.8,.4)}
+  <rect x="30" y="130" width="14" height="75" rx="4" fill="#0c0828" stroke="#4040a0" stroke-width="1.2" opacity=".8"/>
+  <rect x="166" y="130" width="14" height="75" rx="4" fill="#0c0828" stroke="#4040a0" stroke-width="1.2" opacity=".8"/>
+  <path d="M0,207 Q10,165 30,175 Q45,180 55,207Z" fill="#080820" opacity=".8"/>
+  <path d="M155,207 Q165,180 180,175 Q200,165 210,207Z" fill="#080820" opacity=".8"/>
+  <path d="M55,207 Q62,175 75,180 Q88,185 95,207Z" fill="#060615" opacity=".7"/>
+  <path d="M115,207 Q122,185 135,180 Q148,175 155,207Z" fill="#060615" opacity=".7"/>
+  <path d="M50,185 Q58,165 70,170 Q80,155 90,165 Q100,155 105,175 Q110,155 120,165 Q130,155 140,170 Q152,165 160,185" fill="none" stroke="#3040a0" stroke-width="1.5" opacity=".5"/>
+  <path d="M60,190 C65,180 72,178 80,185 C85,178 92,176 100,183" fill="none" stroke="#8090e0" stroke-width="1.2" opacity=".5"/>
+  <circle cx="60" cy="150" r="8" fill="#2030a0" fill-opacity=".3"/>
+  <path d="M54,148 Q60,140 68,148 Q62,158 54,148Z" fill="#3040c0" opacity=".6"/>
+  <path d="M148,152 Q158,145 165,155 Q158,165 148,155Z" fill="#3040c0" opacity=".6"/>
+  <g fill="#a0a8ff" opacity=".7"><circle cx="18" cy="18" r="1.5"/><circle cx="185" cy="15" r="1.3"/><circle cx="200" cy="85" r="1"/><circle cx="15" cy="100" r="1.5"/><circle cx="195" cy="155" r="1.3"/></g>`,
+
+  // XIX ─ The Sun ─────────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4a2000"/><stop offset="100%" stop-color="#150800"/>
+    </radialGradient>
+    ${glow(`${p}g`,8)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="70" r="75" fill="#ffa500" fill-opacity=".12" filter="url(#${p}g)"/>
+  <circle cx="105" cy="70" r="45" fill="#ff8c00" fill-opacity=".2" filter="url(#${p}g)"/>
+  ${Array.from({length:21},(_,i)=>{const a=(i*360/21-90)*Math.PI/180,even=i%2===0;const r1=42,r2=even?60:55;return `<line x1="${(105+r1*Math.cos(a)).toFixed(1)}" y1="${(70+r1*Math.sin(a)).toFixed(1)}" x2="${(105+r2*Math.cos(a)).toFixed(1)}" y2="${(70+r2*Math.sin(a)).toFixed(1)}" stroke="#ffd700" stroke-width="${even?2.5:1.5}" opacity=".9"/>`;}).join('')}
+  <circle cx="105" cy="70" r="38" fill="#ffa500" opacity=".9"/>
+  <circle cx="105" cy="70" r="30" fill="#ffcc00" opacity=".95"/>
+  <circle cx="105" cy="70" r="20" fill="#ffe566"/>
+  <circle cx="97" cy="63" r="4" fill="#8b4500" opacity=".7"/>
+  <circle cx="113" cy="63" r="4" fill="#8b4500" opacity=".7"/>
+  <path d="M97,77 Q105,85 113,77" fill="none" stroke="#8b4500" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+  <circle cx="105" cy="60" r="3" fill="#8b4500" opacity=".5"/>
+  <ellipse cx="90" cy="170" rx="16" ry="12" fill="#f0e0d0" opacity=".7"/>
+  <circle cx="88" cy="162" r="7" fill="#f5d088"/>
+  <line x1="88" y1="169" x2="88" y2="190" stroke="#d4935a" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="88" y1="178" x2="75" y2="185" stroke="#d4935a" stroke-width="3" stroke-linecap="round"/>
+  <line x1="88" y1="176" x2="102" y2="182" stroke="#d4935a" stroke-width="3" stroke-linecap="round"/>
+  <line x1="88" y1="190" x2="80" y2="207" stroke="#d4935a" stroke-width="3" stroke-linecap="round"/>
+  <line x1="88" y1="190" x2="97" y2="205" stroke="#d4935a" stroke-width="3" stroke-linecap="round"/>
+  ${Array.from({length:5},(_,i)=>`<circle cx="${25+i*40}" cy="200" r="5" fill="#ffd700" opacity=".5"/><circle cx="${25+i*40}" cy="200" r="3" fill="#c9a84c" opacity=".7"/>`).join('')}`,
+
+  // XX ─ Judgement ────────────────────────────────────────────
+  ()=>`<defs>
+    <linearGradient id="${p}bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#040a25"/><stop offset="100%" stop-color="#100830"/>
+    </linearGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="65" r="60" fill="#2040a0" fill-opacity=".12" filter="url(#${p}g)"/>
+  <ellipse cx="60" cy="30" rx="30" ry="18" fill="#151a35" opacity=".8"/>
+  <ellipse cx="150" cy="25" rx="35" ry="20" fill="#151a35" opacity=".8"/>
+  <ellipse cx="105" cy="18" rx="42" ry="25" fill="#1a2040" opacity=".8"/>
+  <circle cx="105" cy="55" r="7" fill="#f5cb7a"/>
+  <path d="M90,62 Q80,55 72,65 Q65,75 72,85 Q80,95 105,82 Q130,95 138,85 Q145,75 138,65 Q130,55 120,62 Q112,55 105,62 Q98,55 90,62Z" fill="#e0e8ff" fill-opacity=".9"/>
+  <path d="M72,72 Q62,60 58,72 Q54,85 65,90 Q80,95 105,85 Q130,95 145,90 Q156,85 152,72 Q148,60 138,72 Q130,85 105,82 Q80,85 72,72Z" fill="#c0c8ff" fill-opacity=".5"/>
+  <line x1="105" y1="63" x2="105" y2="45" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+  <ellipse cx="105" cy="43" rx="7" ry="10" fill="#1a1a40" stroke="#c9a84c" stroke-width="1.2"/>
+  <path d="M98,40 Q105,30 112,40" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <circle cx="75" cy="165" r="7" fill="#f5cb7a"/>
+  <line x1="75" y1="172" x2="75" y2="195" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="75" y1="181" x2="62" y2="189" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="75" y1="179" x2="89" y2="186" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="135" cy="165" r="7" fill="#f5cb7a"/>
+  <line x1="135" y1="172" x2="135" y2="195" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="135" y1="181" x2="122" y2="189" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="135" y1="179" x2="148" y2="186" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#8090ff" opacity=".6"><circle cx="18" cy="18" r="1.5"/><circle cx="190" cy="12" r="1.3"/><circle cx="200" cy="80" r="1"/><circle cx="14" cy="140" r="1.5"/></g>`,
+
+  // XXI ─ The World ───────────────────────────────────────────
+  ()=>`<defs>
+    <radialGradient id="${p}bg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#18004a"/><stop offset="100%" stop-color="#080015"/>
+    </radialGradient>
+    ${glow(`${p}g`,6)}
+  </defs>
+  <rect width="210" height="207" fill="url(#${p}bg)"/>
+  <circle cx="105" cy="100" r="75" fill="#5020a0" fill-opacity=".12" filter="url(#${p}g)"/>
+  <ellipse cx="105" cy="100" rx="62" ry="88" fill="none" stroke="#c9a84c" stroke-width="2" opacity=".8"/>
+  <ellipse cx="105" cy="100" rx="55" ry="80" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".4"/>
+  ${Array.from({length:28},(_,i)=>{const a=(i*360/28-90)*Math.PI/180;const rx=62,ry=88;const x=(105+rx*Math.cos(a)).toFixed(1),y=(100+ry*Math.sin(a)).toFixed(1);return `<circle cx="${x}" cy="${y}" r="2.5" fill="#4a9a50" opacity=".75"/>`;}).join('')}
+  <circle cx="105" cy="100" r="8" fill="#f5cb7a"/>
+  <line x1="105" y1="100" x2="95" y2="82" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="105" y1="100" x2="115" y2="82" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="105" y1="108" x2="95" y2="125" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="105" y1="108" x2="115" y2="125" stroke="#c87530" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="105" y1="92" x2="95" y2="110" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <line x1="105" y1="92" x2="115" y2="110" stroke="#c87530" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="36" cy="28" r="9" fill="#1a0050" stroke="#c9a84c" stroke-width="1.2"/><text x="36" y="32" text-anchor="middle" font-size="9" fill="#c9a84c">♂</text>
+  <circle cx="174" cy="28" r="9" fill="#1a0050" stroke="#c9a84c" stroke-width="1.2"/><text x="174" y="32" text-anchor="middle" font-size="9" fill="#c9a84c">♀</text>
+  <circle cx="36" cy="172" r="9" fill="#1a0050" stroke="#c9a84c" stroke-width="1.2"/><text x="36" y="176" text-anchor="middle" font-size="9" fill="#c9a84c">♃</text>
+  <circle cx="174" cy="172" r="9" fill="#1a0050" stroke="#c9a84c" stroke-width="1.2"/><text x="174" y="176" text-anchor="middle" font-size="9" fill="#c9a84c">♆</text>
+  <g fill="#c9a84c" opacity=".5"><circle cx="18" cy="60" r="1.5"/><circle cx="192" cy="55" r="1.3"/><circle cx="200" cy="130" r="1"/><circle cx="15" cy="135" r="1.5"/></g>`,
+  ];
+
+  return `<svg viewBox="0 0 210 207" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">${arts[ci]()}</svg>`;
+}
+
+// ═══ CARD BACK SVG ═══
+function backSVG(){
+  return `<svg viewBox="0 0 210 358" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">
+  <defs>
+    <radialGradient id="bbg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a0045"/><stop offset="100%" stop-color="#050010"/>
+    </radialGradient>
+    <filter id="bgl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="210" height="358" fill="url(#bbg)"/>
+  <!-- outer & inner border -->
+  <rect x="7" y="7" width="196" height="344" rx="10" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+  <rect x="14" y="14" width="182" height="330" rx="7" fill="none" stroke="#c9a84c" stroke-width=".5" opacity=".35"/>
+  <!-- mandala rings -->
+  <circle cx="105" cy="179" r="90" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".3"/>
+  <circle cx="105" cy="179" r="75" fill="none" stroke="#c9a84c" stroke-width=".6" opacity=".35"/>
+  <circle cx="105" cy="179" r="60" fill="none" stroke="#7b2d8b" stroke-width="1" opacity=".55"/>
+  <circle cx="105" cy="179" r="44" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".5"/>
+  <circle cx="105" cy="179" r="28" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".45"/>
+  <circle cx="105" cy="179" r="14" fill="#1a0a35" stroke="#c9a84c" stroke-width="1" opacity=".7"/>
+  <!-- mandala spokes -->
+  ${Array.from({length:12},(_,i)=>{const a=(i*30-90)*Math.PI/180;return `<line x1="${(105+15*Math.cos(a)).toFixed(1)}" y1="${(179+15*Math.sin(a)).toFixed(1)}" x2="${(105+89*Math.cos(a)).toFixed(1)}" y2="${(179+89*Math.sin(a)).toFixed(1)}" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>`;}).join('')}
+  <!-- petal ring outer -->
+  ${Array.from({length:12},(_,i)=>{const a=(i*30-90)*Math.PI/180,r=60;const cx=(105+r*Math.cos(a)).toFixed(1),cy=(179+r*Math.sin(a)).toFixed(1);return `<circle cx="${cx}" cy="${cy}" r="8" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".4"/>`;}).join('')}
+  <!-- petal ring inner -->
+  ${Array.from({length:8},(_,i)=>{const a=(i*45-90)*Math.PI/180,r=44;const cx=(105+r*Math.cos(a)).toFixed(1),cy=(179+r*Math.sin(a)).toFixed(1);return `${starPoly(parseFloat(cx),parseFloat(cy),5,2.5,4,'#c9a84c','none',0)}`;}).join('')}
+  <!-- center star -->
+  ${starPoly(105,179,11,5,8,'#c9a84c','none',0)}
+  <circle cx="105" cy="179" r="4" fill="#c9a84c" opacity=".9" filter="url(#bgl)"/>
+  <!-- corner ornaments -->
+  <g stroke="#c9a84c" stroke-width="1" fill="none" opacity=".6">
+    <path d="M22,22 L38,22 L38,28 M22,22 L22,38 L28,38"/>
+    <path d="M188,22 L172,22 L172,28 M188,22 L188,38 L182,38"/>
+    <path d="M22,336 L38,336 L38,330 M22,336 L22,320 L28,320"/>
+    <path d="M188,336 L172,336 L172,330 M188,336 L188,320 L182,320"/>
+  </g>
+  <!-- top / bottom text -->
+  <text x="105" y="50" text-anchor="middle" font-size="8" fill="#7b2d8b" fill-opacity=".65" font-family="Cinzel,serif" letter-spacing="4">✦ TAROT ✦</text>
+  <text x="105" y="320" text-anchor="middle" font-size="7.5" fill="#7b2d8b" fill-opacity=".55" font-family="Cinzel,serif" letter-spacing="3">오늘의 운세</text>
+  <!-- decorative dots top/bottom -->
+  <g fill="#c9a84c" opacity=".35">
+    <circle cx="105" cy="35" r="1.8"/>
+    <circle cx="85" cy="35" r="1.2"/><circle cx="125" cy="35" r="1.2"/>
+    <circle cx="105" cy="332" r="1.8"/>
+    <circle cx="85" cy="332" r="1.2"/><circle cx="125" cy="332" r="1.2"/>
+  </g>
+  <!-- star field -->
+  <g fill="#fff">
+    ${Array.from({length:30},(_,i)=>{const x=15+i*6.5+Math.sin(i*1.7)*8,y=60+Math.cos(i*2.3)*10+(i%3)*90;return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(Math.sin(i+1)*.6+.7).toFixed(1)}" opacity="${(.2+Math.abs(Math.sin(i*.7))*.5).toFixed(2)}"/>`;}).join('')}
+  </g>
+  </svg>`;
+}
+
+// ═══ CARD BORDER OVERLAY (gold frame on top of card face) ═══
+function borderOverlaySVG(){
+  return `<svg viewBox="0 0 210 358" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+    <rect x="4" y="4" width="202" height="350" rx="12" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity=".65"/>
+    <rect x="10" y="10" width="190" height="338" rx="9" fill="none" stroke="#c9a84c" stroke-width=".5" opacity=".3"/>
+    <line x1="4" y1="207" x2="206" y2="207" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+    <g stroke="#c9a84c" stroke-width=".9" fill="none" opacity=".5">
+      <path d="M18,18 L30,18 L30,22 M18,18 L18,30 L22,30"/>
+      <path d="M192,18 L180,18 L180,22 M192,18 L192,30 L188,30"/>
+      <path d="M18,340 L30,340 L30,336 M18,340 L18,328 L22,328"/>
+      <path d="M192,340 L180,340 L180,336 M192,340 L192,328 L188,328"/>
+    </g>
+    <g fill="#c9a84c" opacity=".4">
+      <circle cx="105" cy="215" r="1.8"/>
+      <circle cx="94" cy="215" r="1.2"/><circle cx="116" cy="215" r="1.2"/>
+    </g>
+  </svg>`;
+}
+
+// ═══ STARS ═══
+function mkStars(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<160;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*2.5+.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--dl:${(Math.random()*7).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+}
+
+// ═══ STATE ═══
+const POS=['과거','현재','미래'];
+let drawn=[],flipped=0;
+
+function draw(){
+  const idxs=Array.from({length:T.length},(_,i)=>i).sort(()=>Math.random()-.5);
+  drawn=idxs.slice(0,3).map(ai=>({...T[ai],artIdx:ai,rev:Math.random()<.28}));
+  flipped=0;
+}
+
+// ═══ RENDER ═══
+function render(){
+  const g=document.getElementById('grid');
+  g.innerHTML='';
+  drawn.forEach((c,i)=>{
+    const slot=document.createElement('div');slot.className='slot';
+    const lbl=document.createElement('div');lbl.className='pos-lbl';lbl.textContent=`✦ ${POS[i]} ✦`;
+    const card=document.createElement('div');card.className='card';card.id=`cd${i}`;
+    card.addEventListener('click',()=>flip(i));
+    const inner=document.createElement('div');inner.className='inner';
+
+    // back
+    const back=document.createElement('div');back.className='face back';
+    back.innerHTML=backSVG();
+
+    // front
+    const front=document.createElement('div');front.className='face front';
+    front.innerHTML=`
+      <div class="art-wrap">${cardArt(c.artIdx)}</div>
+      <div class="card-info">
+        <div>
+          <div class="cname-kr">${c.kr}</div>
+          <div class="cname-en">${c.en}</div>
+        </div>
+        <div class="cdiv"></div>
+        <div class="ckw">${c.kw}</div>
+        <div class="cdiv"></div>
+        <div class="cmsg">${c.rev?c.rv:c.up}</div>
+        <div class="corient${c.rev?' rev':''}">
+          ${c.rev?'▽ 역방향':'△ 정방향'}
+        </div>
+      </div>`;
+
+    // ── 카드 앞면 이미지 로드 (images/{file}.jpg/png/jpeg/webp 순 시도) ──
+    const aw = front.querySelector('.art-wrap');
+    const artSvg = aw.querySelector('svg');
+    const artImg = document.createElement('img');
+    artImg.className = 'art-img';
+    artImg.alt = c.kr;
+    loadImg(artImg, c.file, () => {
+      artImg.style.display = 'block';
+      if(artSvg) artSvg.style.display = 'none';
+    });
+    aw.appendChild(artImg);
+
+    // ── 카드 뒷면 이미지 로드 (images/back.jpg/png/jpeg/webp 순 시도) ──
+    const backSvgEl = back.querySelector('svg');
+    const backImg = document.createElement('img');
+    backImg.className = 'back-img';
+    backImg.alt = 'card back';
+    loadImg(backImg, 'back', () => {
+      backImg.style.display = 'block';
+      if(backSvgEl) backSvgEl.style.display = 'none';
+    });
+    back.appendChild(backImg);
+
+    inner.appendChild(back);inner.appendChild(front);
+    card.appendChild(inner);
+    slot.appendChild(lbl);slot.appendChild(card);
+    g.appendChild(slot);
+  });
+  document.getElementById('summary').classList.remove('on');
+}
+
+function flip(i){
+  const el=document.getElementById(`cd${i}`);
+  if(!el||el.classList.contains('flipped'))return;
+  el.classList.add('flipped');
+  if(++flipped===3)setTimeout(showAdModal,900);
+}
+
+function showSum(){
+  const titles = [
+    `${drawn[0].kr} · ${drawn[1].kr} · ${drawn[2].kr}`,
+    `${drawn[1].kr}의 시간이 찾아왔습니다`,
+    `${drawn[2].kr}으로 향하는 여정`,
+    `${drawn[0].kr}에서 ${drawn[2].kr}으로`,
+  ];
+  document.getElementById('sumTitle').textContent = titles[Math.floor(Math.random()*titles.length)];
+  document.getElementById('sumText').textContent=SUMS[Math.floor(Math.random()*SUMS.length)];
+  document.getElementById('summary').classList.add('on');
+  document.getElementById('summary').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+let _adTimer = null;
+function showAdModal(){
+  const modal = document.getElementById('adModal');
+  const countEl = document.getElementById('adCount');
+  const skipBtn = document.getElementById('adSkip');
+  modal.classList.add('on');
+  skipBtn.classList.remove('ready');
+  let sec = 5;
+  countEl.textContent = sec;
+  _adTimer = setInterval(()=>{
+    sec--;
+    countEl.textContent = sec;
+    if(sec <= 0){
+      clearInterval(_adTimer);
+      skipBtn.classList.add('ready');
+      document.getElementById('adCount').closest('.ad-countdown').textContent = '운세를 확인할 준비가 됐어요';
+    }
+  }, 1000);
+}
+
+function closeAd(){
+  clearInterval(_adTimer);
+  document.getElementById('adModal').classList.remove('on');
+  showSum();
+}
+
+function shuffle(){
+  const g=document.getElementById('grid');
+  g.style.opacity='0';
+  setTimeout(()=>{draw();render();g.style.opacity='1';},420);
+}
+
+// ═══ DATE ═══
+document.getElementById('dateBadge').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+// ═══ IMAGE LOADER ═══
+// 파일명 규칙: {번호}_{영문명}.{확장자} (예: 19_the_sun.jpg)
+function loadImg(imgEl, name, onSuccess) {
+  const exts = ['jpg','jpeg','png','webp'];
+  let i = 0;
+  function tryNext() {
+    if (i >= exts.length) return;
+    imgEl.onload  = onSuccess;
+    imgEl.onerror = () => { i++; tryNext(); };
+    imgEl.src = `./images/${name}.${exts[i]}`;
+    i++;
+  }
+  tryNext();
+}
+
+// ═══ IMAGE GUIDE ═══
+(function(){
+  const guide = document.getElementById('imgGuide');
+  if(guide){
+    const fileList = T.map(c=>`<span style="white-space:nowrap">${c.file}</span>`).join(' · ');
+    guide.innerHTML =
+      '📁 카드 이미지 사용법: index.html 옆에 <b style="color:rgba(201,168,76,.4)">images/</b> 폴더를 만들고<br>' +
+      '파일명을 <b style="color:rgba(201,168,76,.4)">번호_영문명.jpg</b> 형식으로 저장하세요. (예: <b style="color:rgba(201,168,76,.4)">19_the_sun.jpg</b>)<br>' +
+      '뒷면은 <b style="color:rgba(201,168,76,.4)">back.jpg</b> 로 저장하면 자동 적용됩니다.<br>' +
+      '<span style="font-size:8px;opacity:.7">' + fileList + '</span>';
+  }
+})();
+
+// ═══ INIT ═══
+mkStars();draw();render();
+</script>
+<!-- 카카오 애드핏 스크립트 (data-ad-unit ID 교체 후 주석 해제) -->
+<!-- <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script> -->
+</body>
+</html>
