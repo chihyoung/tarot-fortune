@@ -59,22 +59,29 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .card:not(.flipped):hover .back{box-shadow:0 6px 44px rgba(120,40,180,.65),0 -14px 36px rgba(120,40,180,.3)}
 
 /* front */
-.front{transform:rotateY(180deg);display:flex;flex-direction:column;border:1px solid rgba(201,168,76,.55);background:#060012}
+.front{transform:rotateY(180deg);border:1px solid rgba(201,168,76,.55);background:#060012}
 .card.flipped .front{box-shadow:0 0 36px rgba(201,168,76,.28),0 -12px 28px rgba(201,168,76,.14)}
 
-.art-wrap{flex:0 0 58%;position:relative;overflow:hidden}
-.art-wrap svg{width:100%;height:100%;display:block}
-.art-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:13px 13px 0 0}
+/* 이미지/SVG가 카드 전체를 채움 */
+.art-wrap{position:absolute;inset:0;overflow:hidden}
+.art-wrap svg{width:100%;height:100%;display:block;object-fit:cover}
+.art-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center top;display:none;background:#060012}
 .back-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:13px}
 
-.card-info{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 12px 10px;
-  background:linear-gradient(to bottom,rgba(4,0,12,.7) 0%,rgba(4,0,10,.97) 100%)}
-.cname-kr{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:var(--gold-l);line-height:1.2}
-.cname-en{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-d);letter-spacing:2px;text-transform:uppercase}
-.ckw{font-size:9.5px;color:var(--pur-l);letter-spacing:.5px;text-align:center}
+/* 텍스트 정보: 하단 그라데이션 오버레이 */
+.card-info{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:8px 10px 10px;
+  background:linear-gradient(to bottom,transparent 0%,rgba(2,0,10,.82) 28%,rgba(2,0,8,.97) 100%);
+  pointer-events:none;
+}
+.cname-kr{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:var(--gold-l);line-height:1.2}
+.cname-en{font-family:'Cinzel',serif;font-size:7.5px;color:var(--gold-d);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.ckw{font-size:9px;color:var(--pur-l);letter-spacing:.5px;text-align:center;margin-bottom:4px}
 .cdiv{width:90%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);margin:3px 0}
-.cmsg{font-size:9.5px;color:var(--txt2);line-height:1.7;text-align:center;flex:1;display:flex;align-items:center}
-.corient{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-d);letter-spacing:1px}
+.cmsg{font-size:9px;color:var(--txt2);line-height:1.6;text-align:center;margin-bottom:3px}
+.corient{font-family:'Cinzel',serif;font-size:7.5px;color:var(--gold-d);letter-spacing:1px}
 .corient.rev{color:#c06070}
 
 /* ── summary ── */
