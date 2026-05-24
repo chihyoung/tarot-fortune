@@ -189,6 +189,13 @@ footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,
   :root{--cw:168px;--ch:286px}
   .grid{gap:12px}
 }
-@media(max-width:450px){
-  :root{--cw:140px;--ch:238px}
+@media(max-width:600px){
+  :root{--cw:min(300px, 78vw);--ch:min(512px, 133vw)}
+  .grid{flex-direction:column;align-items:center;gap:40px}
+  .pos-lbl{font-size:11px;letter-spacing:5px}
+  .cname-kr{font-size:18px}
+  .ckw{font-size:12px}
+  .cmsg{font-size:12px}
+  .corient{font-size:9px}
+  .sum-outer{padding:32px 24px 28px}
 }
