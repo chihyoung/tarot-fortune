@@ -72,15 +72,15 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .card-info{
   position:absolute;bottom:0;left:0;right:0;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:8px 10px 10px;
-  background:linear-gradient(to bottom,transparent 0%,rgba(2,0,10,.82) 28%,rgba(2,0,8,.97) 100%);
+  padding:14px 12px 14px;
+  background:linear-gradient(to bottom,transparent 0%,rgba(2,0,10,.88) 22%,rgba(2,0,8,.98) 100%);
   pointer-events:none;
 }
-.cname-kr{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:var(--gold-l);line-height:1.2}
-.cname-en{font-family:'Cinzel',serif;font-size:7.5px;color:var(--gold-d);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
-.ckw{font-size:9px;color:var(--pur-l);letter-spacing:.5px;text-align:center;margin-bottom:4px}
-.cdiv{width:90%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);margin:3px 0}
-.cmsg{font-size:9px;color:var(--txt2);line-height:1.6;text-align:center;margin-bottom:3px}
+.cname-kr{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;color:var(--gold-l);line-height:1.3}
+.cname-en{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.ckw{font-size:11px;color:var(--pur-l);letter-spacing:.5px;text-align:center;margin-bottom:5px}
+.cdiv{width:90%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);margin:4px 0}
+.cmsg{font-size:11px;color:var(--txt2);line-height:1.7;text-align:center;margin-bottom:4px}
 .corient{font-family:'Cinzel',serif;font-size:7.5px;color:var(--gold-d);letter-spacing:1px}
 .corient.rev{color:#c06070}
 
