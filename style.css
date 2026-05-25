@@ -198,4 +198,5 @@ footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,
   .cmsg{font-size:12px}
   .corient{font-size:9px}
   .sum-outer{padding:32px 24px 28px}
+  .ad-modal{backdrop-filter:none;-webkit-backdrop-filter:none}
 }
