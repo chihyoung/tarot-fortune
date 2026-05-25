@@ -305,7 +305,8 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 
 /* front */
 .front{transform:rotateY(180deg);border:1px solid rgba(201,168,76,.55);background:#060012}
-.front.reversed{transform:rotateY(180deg) rotate(180deg)}
+.front.reversed .art-wrap{transform:rotate(180deg)}
+.front.reversed .art-img{object-position:center bottom}
 .card.flipped .front{box-shadow:0 0 36px rgba(201,168,76,.28),0 -12px 28px rgba(201,168,76,.14)}
 
 /* 이미지/SVG가 카드 전체를 채움 */
