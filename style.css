@@ -85,8 +85,8 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .corient.rev{color:#c06070}
 
 /* ── summary ── */
-.summary{display:none;position:relative;margin-bottom:52px;animation:risein .9s cubic-bezier(.2,.8,.3,1)}
-.summary.on{display:block}
+.summary{display:none;position:relative;margin-bottom:52px;}
+.summary.on{display:block;animation:risein .9s cubic-bezier(.2,.8,.3,1)}
 @keyframes risein{from{opacity:0;transform:translateY(36px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 .sum-outer{
@@ -146,7 +146,7 @@ footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,
 /* ── ad modal ── */
 .ad-modal{
   display:none;position:fixed;inset:0;z-index:999;
-  background:rgba(2,0,10,.82);backdrop-filter:blur(8px);
+  background:rgba(2,0,10,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   align-items:center;justify-content:center;
 }
 .ad-modal.on{display:flex;animation:fadein .4s ease}
