@@ -142,6 +142,7 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .btn:active{transform:translateY(-1px)}
 
 footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,168,208,.22);letter-spacing:2px}
+.visitor-counter{margin-top:12px;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:2px}
 
 /* ── ad modal ── */
 .ad-modal{
