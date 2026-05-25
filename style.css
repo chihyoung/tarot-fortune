@@ -39,6 +39,8 @@ body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-h
   position:relative;
   width:min(160px,38vw);height:min(260px,62vw);
   margin:0 auto 28px;cursor:pointer;
+  overflow:visible;
+  animation:deck-levitate 3.5s ease-in-out infinite;
 }
 .shuffle-card{
   position:absolute;
@@ -46,21 +48,91 @@ body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-h
   border-radius:10px;
   top:0;left:50%;margin-left:max(-69px,-16.5vw);
   background:linear-gradient(155deg,rgba(28,4,58,.98) 0%,rgba(7,0,18,.99) 100%);
-  border:1px solid rgba(201,168,76,.5);
+  border:1px solid rgba(201,168,76,.68);
   box-shadow:0 10px 40px rgba(0,0,0,.7);
   transition:transform .42s cubic-bezier(.25,.46,.45,.94),opacity .5s;
   background-image:repeating-linear-gradient(
-    45deg,rgba(201,168,76,.06) 0,rgba(201,168,76,.06) 1px,transparent 1px,transparent 9px
+    45deg,rgba(201,168,76,.07) 0,rgba(201,168,76,.07) 1px,transparent 1px,transparent 9px
   );
+  animation:card-glow 3.2s ease-in-out infinite;
+  z-index:1;
 }
 .shuffle-card::before{
   content:'';position:absolute;inset:7px;border-radius:6px;
-  border:1px solid rgba(201,168,76,.2);
+  border:1px solid rgba(201,168,76,.28);
 }
 .shuffle-card::after{
   content:'✦';position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  color:rgba(201,168,76,.25);font-size:clamp(28px,7vw,36px);
+  color:rgba(201,168,76,.45);font-size:clamp(28px,7vw,36px);
+  text-shadow:0 0 12px rgba(201,168,76,.6);
+}
+/* ── Deck light effects ── */
+.deck-glow{
+  position:absolute;
+  width:360px;height:360px;
+  top:50%;left:50%;
+  pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at center,
+    rgba(201,168,76,.55) 0%,
+    rgba(201,168,76,.22) 20%,
+    rgba(120,55,220,.1) 44%,
+    transparent 65%
+  );
+  animation:deck-glow-pulse 2.6s ease-in-out infinite;
+}
+.deck-halo{
+  position:absolute;
+  width:620px;height:620px;
+  top:50%;left:50%;
+  pointer-events:none;z-index:0;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg,   rgba(201,168,76,.32)  7deg, transparent 14deg,
+    transparent 38deg,  rgba(255,228,120,.2)  44deg, transparent 50deg,
+    transparent 72deg,  rgba(201,168,76,.32)  79deg, transparent 86deg,
+    transparent 108deg, rgba(255,228,120,.2) 114deg, transparent 120deg,
+    transparent 144deg, rgba(201,168,76,.32) 151deg, transparent 158deg,
+    transparent 180deg, rgba(255,228,120,.2) 186deg, transparent 192deg,
+    transparent 216deg, rgba(201,168,76,.32) 223deg, transparent 230deg,
+    transparent 252deg, rgba(255,228,120,.2) 258deg, transparent 264deg,
+    transparent 288deg, rgba(201,168,76,.32) 295deg, transparent 302deg,
+    transparent 324deg, rgba(255,228,120,.2) 330deg, transparent 336deg
+  );
+  mask-image:radial-gradient(circle,transparent 11%,rgba(0,0,0,.95) 21%,rgba(0,0,0,.5) 52%,transparent 68%);
+  -webkit-mask-image:radial-gradient(circle,transparent 11%,rgba(0,0,0,.95) 21%,rgba(0,0,0,.5) 52%,transparent 68%);
+  animation:deck-halo-spin 22s linear infinite;
+}
+.deck-particle{
+  position:absolute;
+  width:3px;height:3px;
+  border-radius:50%;
+  background:rgba(255,228,100,1);
+  box-shadow:0 0 5px 2px rgba(201,168,76,.85);
+  pointer-events:none;z-index:2;
+  animation:particle-drift var(--dur,3s) var(--delay,0s) ease-in-out infinite;
+}
+@keyframes deck-levitate{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-9px)}
+}
+@keyframes deck-glow-pulse{
+  0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.24)}
+}
+@keyframes deck-halo-spin{
+  from{transform:translate(-50%,-50%) rotate(0deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+@keyframes card-glow{
+  0%,100%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 10px rgba(201,168,76,.1)}
+  50%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 34px rgba(201,168,76,.45),0 0 68px rgba(201,168,76,.14)}
+}
+@keyframes particle-drift{
+  0%{transform:translate(0,0) scale(0);opacity:0}
+  15%{opacity:1;transform:translate(calc(var(--dx)*.2),calc(var(--dy)*.2)) scale(1.7)}
+  80%{opacity:.5;transform:translate(var(--dx),var(--dy)) scale(.85)}
+  100%{transform:translate(var(--dx),calc(var(--dy) - 26px)) scale(0);opacity:0}
 }
 
 /* ── card spread ── */
@@ -250,7 +322,12 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .sum-divider{display:flex;align-items:center;gap:14px;margin:0 auto 26px;max-width:380px}
 .sum-divider span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.45),transparent)}
 .sum-divider i{color:var(--gold);font-style:normal;font-size:13px;opacity:.8}
-.sum-text{font-size:clamp(14px,2vw,17px);color:#ddd0f5;line-height:2.2;font-weight:300;letter-spacing:.3px}
+.sum-text{color:#ddd0f5;font-weight:300}
+.sum-block{margin-bottom:24px}
+.sum-block:last-child{margin-bottom:0}
+.sum-pos-lbl{font-family:'Cinzel',serif;font-size:clamp(10px,1.5vw,12px);letter-spacing:2.5px;color:rgba(212,175,128,.8);margin-bottom:8px}
+.sum-pos-txt{font-size:clamp(14px,2vw,16px);line-height:2;letter-spacing:.3px}
+.sum-rv{font-size:10px;color:rgba(255,130,130,.75);letter-spacing:1px;vertical-align:middle;margin-left:2px}
 .sum-glow{
   position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
   width:300px;height:120px;
