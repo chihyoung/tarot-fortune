@@ -144,6 +144,28 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,168,208,.22);letter-spacing:2px}
 .visitor-counter{margin-top:14px;font-size:11px;color:rgba(201,168,76,.6);letter-spacing:2px;font-family:'Cinzel',serif}
 
+/* ── music button ── */
+.music-btn{
+  position:fixed;bottom:28px;right:28px;z-index:500;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(12,2,28,.82);
+  border:1px solid rgba(201,168,76,.4);
+  color:rgba(201,168,76,.55);font-size:20px;
+  cursor:pointer;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  transition:color .3s,border-color .3s,box-shadow .3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.music-btn:hover{color:var(--gold);border-color:rgba(201,168,76,.75)}
+.music-btn.playing{
+  color:var(--gold);border-color:rgba(201,168,76,.8);
+  animation:pulse-music 2.8s ease-in-out infinite;
+}
+@keyframes pulse-music{
+  0%,100%{box-shadow:0 0 8px rgba(201,168,76,.15)}
+  50%{box-shadow:0 0 22px rgba(201,168,76,.38)}
+}
+
 /* ── ad modal ── */
 .ad-modal{
   display:none;position:fixed;inset:0;z-index:999;
