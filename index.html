@@ -14,6 +14,18 @@
 <div id="stars"></div>
 <div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
 
+<!-- ── Intro Shuffle Overlay ── -->
+<div id="introOverlay" class="intro-overlay">
+  <div class="intro-inner">
+    <div class="intro-eyebrow">✦ &nbsp; Your Fortune Awaits &nbsp; ✦</div>
+    <h2 class="intro-title">오늘의 운명을 열어보세요</h2>
+    <p class="intro-sub">카드를 직접 섞어<br>당신만의 오늘 운세를 펼쳐보세요</p>
+    <div class="shuffle-deck" id="shuffleDeck"></div>
+    <p class="intro-hint" id="introHint">덱을 클릭하거나 버튼을 눌러 섞어주세요</p>
+    <button class="shuffle-btn" id="shuffleBtn" onclick="doIntroShuffle()">✦ &nbsp; 카드 섞기 &nbsp; ✦</button>
+  </div>
+</div>
+
 <div class="wrap">
   <header>
     <div class="tdeco">
@@ -72,7 +84,7 @@
 </div>
 
 <button id="musicToggle" class="music-btn" onclick="toggleMusic()" title="배경음악 켜기/끄기">♪</button>
-<script src="app.js?v=20250525f"></script>
+<script src="app.js?v=20250525g"></script>
 <!-- 카카오 애드핏 스크립트 (data-ad-unit ID 교체 후 주석 해제) -->
 <!-- <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script> -->
 </body>

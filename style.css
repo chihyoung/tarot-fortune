@@ -7,6 +7,71 @@
 }
 body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-height:100vh;overflow-x:hidden}
 
+/* ── intro overlay ── */
+.intro-overlay{
+  position:fixed;inset:0;z-index:900;
+  background:linear-gradient(160deg,rgba(5,0,14,.97) 0%,rgba(16,2,38,.97) 55%,rgba(7,0,18,.97) 100%);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .65s ease;
+}
+.intro-overlay.intro-hiding{opacity:0;pointer-events:none}
+.intro-inner{text-align:center;padding:0 28px;max-width:480px;width:100%}
+.intro-eyebrow{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;
+  color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:22px;
+}
+.intro-title{
+  font-family:'Cinzel',serif;font-size:clamp(22px,5.5vw,32px);font-weight:600;
+  margin-bottom:14px;
+  background:linear-gradient(135deg,#c9a84c 0%,#ead98b 50%,#c9a84c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;background-size:200%;animation:shim 5s linear infinite;
+}
+.intro-sub{
+  font-family:'Noto Serif KR',serif;font-size:13px;
+  color:rgba(184,168,208,.62);margin-bottom:44px;letter-spacing:.5px;line-height:2;
+}
+.intro-hint{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;
+  color:rgba(201,168,76,.38);margin-bottom:28px;transition:opacity .4s;
+}
+.shuffle-deck{
+  position:relative;width:80px;height:124px;
+  margin:0 auto 20px;cursor:pointer;
+}
+.shuffle-card{
+  position:absolute;width:68px;height:112px;border-radius:8px;
+  top:6px;left:6px;
+  background:linear-gradient(155deg,rgba(28,4,58,.98) 0%,rgba(7,0,18,.99) 100%);
+  border:1px solid rgba(201,168,76,.48);
+  box-shadow:0 6px 28px rgba(0,0,0,.65);
+  transition:transform .4s cubic-bezier(.25,.46,.45,.94),opacity .5s;
+  background-image:repeating-linear-gradient(
+    45deg,rgba(201,168,76,.05) 0,rgba(201,168,76,.05) 1px,transparent 1px,transparent 9px
+  );
+}
+.shuffle-card::before{
+  content:'';position:absolute;inset:5px;border-radius:4px;
+  border:1px solid rgba(201,168,76,.18);
+}
+.shuffle-card::after{
+  content:'✦';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  color:rgba(201,168,76,.22);font-size:22px;
+}
+.shuffle-btn{
+  background:transparent;
+  border:1px solid rgba(201,168,76,.55);color:var(--gold);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;
+  padding:14px 44px;cursor:pointer;border-radius:32px;
+  text-transform:uppercase;transition:all .3s;
+}
+.shuffle-btn:not(:disabled):hover{
+  background:rgba(201,168,76,.08);
+  box-shadow:0 0 28px rgba(201,168,76,.28);transform:translateY(-2px);
+}
+.shuffle-btn:disabled{opacity:.6;cursor:default;transform:none}
+
 /* ── stars ── */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0}
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) var(--dl,0s) infinite ease-in-out}
