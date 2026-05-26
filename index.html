@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>오늘의 타로 운세 | 무료 타로 카드 운세</title>
+<meta name="description" content="메이저 아르카나 22장으로 오늘의 운세를 확인하세요. 과거·현재·미래 3장 카드 리딩으로 당신만의 하루를 열어보세요.">
+<meta name="keywords" content="타로,타로 운세,오늘의 운세,무료 타로,타로 카드,메이저 아르카나,타로 리딩,운세,오늘의 타로">
+<meta name="author" content="오늘의 타로 운세">
+<meta property="og:type" content="website">
+<meta property="og:title" content="오늘의 타로 운세 | 무료 타로 카드 운세">
+<meta property="og:description" content="메이저 아르카나 22장으로 오늘의 운세를 확인하세요. 과거·현재·미래 3장 카드 리딩.">
+<meta property="og:url" content="https://chihyoung.github.io/tarot-fortune/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="오늘의 타로 운세">
+<meta name="twitter:description" content="메이저 아르카나 22장으로 오늘의 운세를 확인하세요.">
+<link rel="canonical" href="https://chihyoung.github.io/tarot-fortune/">
+<meta name="google-site-verification" content="uQ1IU6CPBNb6Ci7ns7xQZQj0XWWM17Q_IkPBkyNnU1k" />
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DNCLPB00F5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-DNCLPB00F5');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20250525w">
+</head>
+<body>
+<div id="stars"></div>
+<div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
+
+<!-- ── Intro Shuffle Overlay ── -->
+<div id="introOverlay" class="intro-overlay">
+  <div class="intro-inner">
+    <div class="intro-eyebrow">✦ &nbsp; Your Fortune Awaits &nbsp; ✦</div>
+    <h2 class="intro-title">오늘의 운명을 열어보세요</h2>
+    <p class="intro-sub">카드를 직접 섞어<br>당신만의 오늘 운세를 펼쳐보세요</p>
+    <div class="shuffle-deck" id="shuffleDeck"></div>
+    <p class="intro-hint" id="introHint">덱을 클릭하거나 버튼을 눌러 섞어주세요</p>
+    <button class="shuffle-btn" id="shuffleBtn" onclick="doIntroShuffle()">✦ &nbsp; 카드 섞기 &nbsp; ✦</button>
+  </div>
+</div>
+
+<!-- ── Card Spread Overlay ── -->
+<div id="spreadOverlay" class="spread-overlay">
+  <div class="spread-inner">
+    <div class="intro-eyebrow">✦ &nbsp; Choose Your Cards &nbsp; ✦</div>
+    <h2 class="spread-title">끌리는 카드 3장을 골라주세요</h2>
+    <p class="spread-sub">직관을 따라 오늘의 운명을 이끌 카드를 선택하세요</p>
+    <div class="spread-cards" id="spreadCards"></div>
+    <p class="spread-count" id="spreadCount">✦ &nbsp; 0 / 3 선택 &nbsp; ✦</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="tdeco">
+      <div class="tline"></div><span class="tsym">✦</span><div class="tline"></div>
+    </div>
+    <h1>오늘의 타로 운세</h1>
+    <p class="sub">Daily Tarot Reading</p>
+    <div class="date-badge" id="dateBadge"></div>
+    <p class="visitor-counter">오늘 방문자 <span id="todayCount">-</span>명 &nbsp;·&nbsp; 전체 <span id="totalCount">-</span>명</p>
+  </header>
+
+  <div style="text-align:center;margin-bottom:18px">
+    <a href="cards.html" style="display:inline-block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.7);text-decoration:none;border:1px solid rgba(201,168,76,.28);border-radius:20px;padding:7px 18px;transition:color .2s,border-color .2s,box-shadow .2s" onmouseover="this.style.color='rgba(201,168,76,1)';this.style.borderColor='rgba(201,168,76,.7)';this.style.boxShadow='0 0 14px rgba(201,168,76,.2)'" onmouseout="this.style.color='rgba(201,168,76,.7)';this.style.borderColor='rgba(201,168,76,.28)';this.style.boxShadow='none'">✦ &nbsp; 타로 카드 해설 보기 &nbsp; ✦</a>
+  </div>
+
+  <p class="inst">
+    세 장의 카드가 당신을 기다립니다<br>
+    각 카드를 클릭하여 오늘의 운명을 확인하세요
+    <br><span class="hint">✦ &nbsp; Past &nbsp;·&nbsp; Present &nbsp;·&nbsp; Future &nbsp; ✦</span>
+  </p>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="summary" id="summary">
+    <div class="sum-outer">
+      <div class="sum-corner tl"></div><div class="sum-corner tr"></div>
+      <div class="sum-corner bl"></div><div class="sum-corner br"></div>
+      <div class="sum-eyebrow">✦ &nbsp; Today's Oracle &nbsp; ✦</div>
+      <div class="sum-title" id="sumTitle">오늘의 별이 전하는 말</div>
+      <div class="sum-divider"><span></span><i>✦</i><span></span></div>
+      <p class="sum-text" id="sumText"></p>
+      <div class="sum-glow"></div>
+    </div>
+  </div>
+
+  <!-- 광고 모달 -->
+  <div class="ad-modal" id="adModal">
+    <div class="ad-box">
+      <div class="ad-label">잠시 후 오늘의 운세가 공개됩니다</div>
+      <!-- ▼ 카카오 애드핏: data-ad-unit 값을 발급받은 ID로 교체하세요 -->
+      <div class="ad-slot">
+        <ins class="kakao_ad_area" style="display:none;"
+          data-ad-unit="DAN-XXXXXXXXXX"
+          data-ad-width="320"
+          data-ad-height="100"></ins>
+        <span class="ad-slot-hint" id="adHint">AD</span>
+      </div>
+      <!-- ▲ 애드핏 스크립트는 </body> 직전에 한 번만 삽입됩니다 -->
+      <div class="ad-countdown" id="adCountdown"><b id="adCount">5</b> 초 후 운세 공개</div>
+      <button class="ad-skip" id="adSkip" onclick="closeAd()">✦ &nbsp; 운세 보기 &nbsp; ✦</button>
+    </div>
+  </div>
+
+  <button class="btn" onclick="shuffle()">✦ &nbsp; 카드 다시 뽑기 &nbsp; ✦</button>
+
+  <footer>
+    <p style="color:rgba(255,255,255,.75)">The stars have spoken · 별의 속삭임을 카드가 전합니다</p>
+    <p style="margin-top:10px;font-size:9px;color:rgba(255,255,255,.6);letter-spacing:0.5px">BGM: "Atlantean Twilight" by Kevin MacLeod (incompetech.com) · CC BY 4.0</p>
+    <p style="margin-top:14px;font-size:10px"><a href="privacy.html" style="color:rgba(201,168,76,.55);text-decoration:none;letter-spacing:1px;border-bottom:1px solid rgba(201,168,76,.2);padding-bottom:1px">개인정보처리방침</a></p>
+  </footer>
+</div>
+
+<button id="musicToggle" class="music-btn" onclick="toggleMusic()" title="배경음악 켜기/끄기">♪</button>
+<script src="app.js?v=20260526"></script>
+<!-- 카카오 애드핏 스크립트 (data-ad-unit ID 교체 후 주석 해제) -->
+<!-- <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script> -->
+</body>
+</html>
