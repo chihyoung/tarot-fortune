@@ -150,7 +150,7 @@ body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-h
   position:fixed;inset:0;z-index:890;
   background:linear-gradient(160deg,rgba(5,0,14,.97) 0%,rgba(16,2,38,.97) 55%,rgba(7,0,18,.97) 100%);
   display:none;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .6s ease;
+  opacity:0;transition:opacity 1.0s ease;
 }
 .spread-overlay.spread-visible{opacity:1}
 .spread-overlay.spread-hiding{opacity:0;pointer-events:none}
