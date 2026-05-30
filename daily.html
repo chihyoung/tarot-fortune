@@ -51,32 +51,12 @@ h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,30px);font-weight:700;let
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:5px;overflow:hidden}
 
-/* 뒷면 — spread-card-face와 완전히 동일한 스타일 */
-.card-back-skin{
-  position:absolute;inset:0;border-radius:5px;
-  background:linear-gradient(155deg,rgba(28,4,58,.98) 0%,rgba(7,0,18,.99) 100%);
-  border:1px solid rgba(201,168,76,.55);
-  box-shadow:0 4px 16px rgba(0,0,0,.65);
-  display:flex;align-items:center;justify-content:center;
-  background-image:repeating-linear-gradient(
-    45deg,rgba(201,168,76,.06) 0,rgba(201,168,76,.06) 1px,transparent 1px,transparent 7px
-  );
-  animation:card-glow 3.4s ease-in-out infinite;
-}
-.card-back-skin::before{
-  content:'';position:absolute;inset:3px;border-radius:3px;
-  border:1px solid rgba(201,168,76,.2);
-}
-.card-back-skin::after{
-  content:'✦';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  color:rgba(201,168,76,.32);font-size:clamp(10px,2.5vw,14px);
-  text-shadow:0 0 8px rgba(201,168,76,.5);pointer-events:none;
-}
+/* 뒷면 */
 @keyframes card-glow{
   0%,100%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 10px rgba(201,168,76,.1)}
   50%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 34px rgba(201,168,76,.45),0 0 68px rgba(201,168,76,.14)}
 }
+.card-back{animation:card-glow 3.4s ease-in-out infinite}
 
 /* 앞면 */
 .card-front{transform:rotateY(180deg);background:#05000f;border:1px solid rgba(201,168,76,.4)}
@@ -189,7 +169,55 @@ footer{position:relative;z-index:1;padding-bottom:40px;font-family:'Cinzel',seri
   <div class="card-wrap" id="cardWrap" onclick="revealCard()">
     <div class="card-inner" id="cardInner">
       <div class="card-face card-back">
-        <div class="card-back-skin"></div>
+        <svg viewBox="0 0 210 358" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;border-radius:5px">
+          <defs>
+            <radialGradient id="dbg" cx="50%" cy="50%" r="70%">
+              <stop offset="0%" stop-color="#1a0045"/><stop offset="100%" stop-color="#050010"/>
+            </radialGradient>
+          </defs>
+          <rect width="210" height="358" fill="url(#dbg)" rx="5"/>
+          <rect x="7" y="7" width="196" height="344" rx="8" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".7"/>
+          <rect x="14" y="14" width="182" height="330" rx="5" fill="none" stroke="#c9a84c" stroke-width=".5" opacity=".35"/>
+          <circle cx="105" cy="179" r="90" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".3"/>
+          <circle cx="105" cy="179" r="75" fill="none" stroke="#c9a84c" stroke-width=".6" opacity=".35"/>
+          <circle cx="105" cy="179" r="60" fill="none" stroke="#7b2d8b" stroke-width="1" opacity=".55"/>
+          <circle cx="105" cy="179" r="44" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity=".5"/>
+          <circle cx="105" cy="179" r="28" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".45"/>
+          <circle cx="105" cy="179" r="14" fill="#1a0a35" stroke="#c9a84c" stroke-width="1" opacity=".7"/>
+          <line x1="105" y1="164" x2="105" y2="90" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="112.5" y1="166" x2="149.5" y2="101.9" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="118" y1="171.5" x2="182.1" y2="134.5" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="120" y1="179" x2="194" y2="179" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="118" y1="186.5" x2="182.1" y2="223.5" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="112.5" y1="192" x2="149.5" y2="256.1" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="105" y1="194" x2="105" y2="268" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="97.5" y1="192" x2="60.5" y2="256.1" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="92" y1="186.5" x2="27.9" y2="223.5" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="90" y1="179" x2="16" y2="179" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="92" y1="171.5" x2="27.9" y2="134.5" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <line x1="97.5" y1="166" x2="60.5" y2="101.9" stroke="#c9a84c" stroke-width=".6" opacity=".3"/>
+          <circle cx="105" cy="119" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="135" cy="127" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="157" cy="149" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="165" cy="179" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="157" cy="209" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="135" cy="231" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="105" cy="239" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="75" cy="231" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="53" cy="209" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="45" cy="179" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="53" cy="149" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <circle cx="75" cy="127" r="3" fill="#c9a84c" fill-opacity=".5" stroke="#c9a84c" stroke-width=".5"/>
+          <polygon points="105,131 106.5,133 108.8,133.8 107.4,135.8 107.4,138.2 105,137.5 102.6,138.2 102.6,135.8 101.2,133.8 103.5,133" fill="#c9a84c" opacity=".55"/>
+          <polygon points="136.1,143.9 137.6,145.9 139.9,146.7 138.5,148.7 138.5,151.1 136.1,150.4 133.8,151.1 133.7,148.7 132.3,146.7 134.6,145.9" fill="#c9a84c" opacity=".55"/>
+          <polygon points="149,175 150.5,177 152.8,177.8 151.4,179.8 151.4,182.2 149,181.5 146.6,182.2 146.6,179.8 145.2,177.8 147.5,177" fill="#c9a84c" opacity=".55"/>
+          <polygon points="136.1,206.1 137.6,208.1 139.9,208.9 138.5,210.9 138.5,213.3 136.1,212.6 133.8,213.3 133.7,210.9 132.3,208.9 134.6,208.1" fill="#c9a84c" opacity=".55"/>
+          <polygon points="105,219 106.5,221 108.8,221.8 107.4,223.8 107.4,226.2 105,225.5 102.6,226.2 102.6,223.8 101.2,221.8 103.5,221" fill="#c9a84c" opacity=".55"/>
+          <polygon points="73.9,206.1 75.4,208.1 77.7,208.9 76.3,210.9 76.2,213.3 73.9,212.6 71.5,213.3 71.5,210.9 70.1,208.9 72.4,208.1" fill="#c9a84c" opacity=".55"/>
+          <polygon points="61,175 62.5,177 64.8,177.8 63.4,179.8 63.4,182.2 61,181.5 58.6,182.2 58.6,179.8 57.2,177.8 59.5,177" fill="#c9a84c" opacity=".55"/>
+          <polygon points="73.9,143.9 75.4,145.9 77.7,146.7 76.3,148.7 76.2,151.1 73.9,150.4 71.5,151.1 71.5,148.7 70.1,146.7 72.4,145.9" fill="#c9a84c" opacity=".55"/>
+          <polygon points="105,171 106.4,174.2 109.3,172.3 108.8,175.7 112.3,175.7 109.9,178.3 112.9,180.1 109.5,181.1 111,184.2 107.7,183.2 107.3,186.7 105,184 102.7,186.7 102.3,183.2 99,184.2 100.5,181.1 97.1,180.1 100.1,178.3 97.7,175.7 101.2,175.7 100.7,172.3 103.6,174.2" fill="#c9a84c" opacity=".8"/>
+        </svg>
       </div>
       <div class="card-face card-front">
         <img id="cardImg" src="" alt="">
