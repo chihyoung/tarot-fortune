@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 한 장 | 데일리 타로</title>
+<meta name="description" content="오늘 하루를 위한 타로 카드 한 장. 매일 새로운 카드가 당신에게 말을 건넵니다.">
+<meta name="keywords" content="오늘의 타로,데일리 타로,타로 한 장,오늘의 운세,타로 카드">
+<meta property="og:type" content="website">
+<meta property="og:title" content="오늘의 한 장 | 데일리 타로">
+<meta property="og:description" content="오늘 하루를 위한 타로 카드 한 장. 매일 새로운 카드가 당신에게 말을 건넵니다.">
+<meta property="og:url" content="https://chihyoung.github.io/tarot-fortune/daily.html">
+<meta property="og:image" content="https://chihyoung.github.io/tarot-fortune/images/19_the_sun.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://chihyoung.github.io/tarot-fortune/images/19_the_sun.png">
+<link rel="canonical" href="https://chihyoung.github.io/tarot-fortune/daily.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DNCLPB00F5"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DNCLPB00F5');</script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-l:#f0d87a;--gold-d:#7a5e20;--txt:#f0e6ff;--txt2:#b8a8d0}
+body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center}
+
+/* stars */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.neb{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.n1{width:600px;height:600px;top:-200px;left:-200px;background:radial-gradient(ellipse,rgba(80,20,120,.18) 0%,transparent 70%)}
+.n2{width:500px;height:500px;bottom:-150px;right:-150px;background:radial-gradient(ellipse,rgba(20,40,120,.15) 0%,transparent 70%)}
+
+.wrap{position:relative;z-index:1;width:100%;max-width:540px;padding:40px 24px 60px;text-align:center}
+
+/* nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}
+.nav-link{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.6);text-decoration:none;border:1px solid rgba(201,168,76,.22);border-radius:20px;padding:7px 16px;transition:color .2s,border-color .2s}
+.nav-link:hover{color:var(--gold);border-color:rgba(201,168,76,.6)}
+
+/* header */
+.eyebrow{font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:16px}
+h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,30px);font-weight:700;letter-spacing:3px;
+  background:linear-gradient(135deg,#c9a84c,#ead98b,#c9a84c);background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shim 5s linear infinite;margin-bottom:10px}
+@keyframes shim{0%{background-position:0%}100%{background-position:200%}}
+.date-badge{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:rgba(201,168,76,.55);margin-bottom:40px}
+
+/* card flip */
+.card-wrap{perspective:1200px;width:200px;margin:0 auto 36px;cursor:pointer}
+.card-inner{width:100%;height:340px;position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.4,0,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;overflow:hidden}
+
+/* 뒷면 */
+.card-back{
+  background:linear-gradient(160deg,#0e0530 0%,#1a0650 50%,#0a0228 100%);
+  border:1px solid rgba(201,168,76,.35);
+  display:flex;align-items:center;justify-content:center
+}
+.card-back-inner{width:80%;height:90%;border:1px solid rgba(201,168,76,.2);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.card-back svg{opacity:.5}
+.card-back-text{font-family:'Cinzel',serif;font-size:8px;letter-spacing:4px;color:rgba(201,168,76,.5)}
+
+/* 앞면 */
+.card-front{transform:rotateY(180deg);background:#05000f;border:1px solid rgba(201,168,76,.4)}
+.card-front img{width:100%;height:100%;object-fit:cover;border-radius:14px}
+
+/* 클릭 힌트 */
+.reveal-hint{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.5);margin-bottom:36px;transition:opacity .4s}
+.reveal-hint.hidden{opacity:0;pointer-events:none}
+
+/* 결과 */
+.result{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+.result.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+
+.card-num{font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:rgba(201,168,76,.5);margin-bottom:6px}
+.card-kr{font-family:'Cinzel',serif;font-size:clamp(24px,5vw,32px);font-weight:700;
+  background:linear-gradient(135deg,#c9a84c,#f0d87a,#c9a84c);background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shim 5s linear infinite;margin-bottom:4px}
+.card-en{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:rgba(201,168,76,.45);margin-bottom:18px}
+.card-kw{font-size:12px;color:#a355b8;letter-spacing:1px;margin-bottom:28px}
+
+.divider{display:flex;align-items:center;gap:14px;margin:0 auto 28px;max-width:320px}
+.divider span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent)}
+.divider i{color:var(--gold);font-style:normal;font-size:13px;opacity:.7}
+
+.msg-box{
+  background:linear-gradient(160deg,rgba(30,4,60,.9),rgba(8,0,22,.95));
+  border:1px solid rgba(201,168,76,.3);border-radius:16px;
+  padding:32px 28px;margin-bottom:28px;position:relative
+}
+.msg-box::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent)
+}
+.msg-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;color:rgba(201,168,76,.5);margin-bottom:14px}
+.msg-text{font-size:15px;line-height:2;color:#ddd0f5;font-weight:300}
+
+/* 버튼 */
+.btn-row{display:flex;flex-direction:column;gap:12px;align-items:center}
+.btn{background:transparent;border:1px solid rgba(201,168,76,.45);color:var(--gold);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;padding:13px 36px;
+  cursor:pointer;border-radius:32px;transition:all .3s;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--gold);box-shadow:0 0 24px rgba(201,168,76,.3);transform:translateY(-2px)}
+.btn.secondary{border-color:rgba(201,168,76,.25);color:rgba(201,168,76,.6);font-size:10px;padding:10px 28px}
+.btn.secondary:hover{border-color:rgba(201,168,76,.5);color:var(--gold);box-shadow:none}
+
+/* share toast */
+.share-toast{
+  position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:rgba(18,8,36,.96);color:var(--gold);
+  border:1px solid rgba(201,168,76,.4);border-radius:24px;
+  padding:12px 24px;font-size:13px;letter-spacing:.5px;
+  font-family:'Noto Serif KR',serif;z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .3s,transform .3s;white-space:nowrap
+}
+.share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{position:relative;z-index:1;padding-bottom:40px;font-family:'Cinzel',serif;font-size:9px;color:rgba(184,168,208,.2);letter-spacing:2px}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="neb n1"></div><div class="neb n2"></div>
+
+<div class="wrap">
+  <div class="nav-row">
+    <a href="index.html" class="nav-link">← 3장 리딩</a>
+    <a href="cards.html" class="nav-link">카드 해설</a>
+  </div>
+
+  <div class="eyebrow">✦ &nbsp; Daily Draw &nbsp; ✦</div>
+  <h1>오늘의 한 장</h1>
+  <div class="date-badge" id="dateBadge"></div>
+
+  <div class="card-wrap" id="cardWrap" onclick="revealCard()">
+    <div class="card-inner" id="cardInner">
+      <div class="card-face card-back">
+        <div class="card-back-inner">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <polygon points="24,4 28,18 44,18 31,27 36,42 24,33 12,42 17,27 4,18 20,18" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+          </svg>
+          <div class="card-back-text">TAP TO REVEAL</div>
+        </div>
+      </div>
+      <div class="card-face card-front">
+        <img id="cardImg" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal-hint" id="revealHint">✦ &nbsp; 카드를 탭하여 오늘의 운세를 확인하세요 &nbsp; ✦</p>
+
+  <div class="result" id="result">
+    <div class="card-num" id="cardNum"></div>
+    <div class="card-kr" id="cardKr"></div>
+    <div class="card-en" id="cardEn"></div>
+    <div class="card-kw" id="cardKw"></div>
+
+    <div class="divider"><span></span><i>✦</i><span></span></div>
+
+    <div class="msg-box">
+      <div class="msg-label">✦ &nbsp; Today's Message &nbsp; ✦</div>
+      <div class="msg-text" id="cardMsg"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="shareDaily()">✦ &nbsp; 오늘의 카드 공유하기 &nbsp; ✦</button>
+      <a href="index.html" class="btn secondary">3장 리딩으로 더 깊이 보기 →</a>
+    </div>
+  </div>
+</div>
+
+<footer><p>The stars have spoken</p></footer>
+
+<script>
+const CARDS = [
+  {n:'0',  kr:'바보',         en:'The Fool',         kw:'새 출발 · 자유 · 모험',     file:'0_the_fool',         msg:'두려움 없이 첫 걸음을 내딛을 때입니다. 준비가 부족해도 시작하면 길이 보입니다.'},
+  {n:'I',  kr:'마법사',       en:'The Magician',     kw:'의지력 · 기술 · 집중',      file:'1_the_magician',     msg:'필요한 능력이 이미 손 안에 있습니다. 오늘 미뤄온 일을 시작하면 예상보다 빠르게 풀립니다.'},
+  {n:'II', kr:'여사제',       en:'The High Priestess',kw:'직관 · 신비 · 내면의 지혜', file:'2_the_high_priestess',msg:'말 너머의 것을 읽는 날입니다. 직감이 이끄는 방향을 신뢰하고 섣부른 결정은 잠시 미루세요.'},
+  {n:'III',kr:'여황제',       en:'The Empress',      kw:'풍요 · 창조 · 모성',        file:'3_the_empress',      msg:'지금 당신 주변에 이미 넉넉함이 있습니다. 감사하는 마음이 더 큰 풍요를 불러들입니다.'},
+  {n:'IV', kr:'황제',         en:'The Emperor',      kw:'권위 · 안정 · 체계',        file:'4_the_emperor',      msg:'체계적인 접근이 빛을 발하는 날입니다. 계획을 세우고 자신감 있게 밀고 나가세요.'},
+  {n:'V',  kr:'교황',         en:'The Hierophant',   kw:'전통 · 가르침 · 신념',      file:'5_the_hierophant',   msg:'검증된 방법과 주변의 조언에 귀를 기울이세요. 혼자 해결하려 하기보다 함께하면 더 빠릅니다.'},
+  {n:'VI', kr:'연인',         en:'The Lovers',       kw:'선택 · 연결 · 균형',        file:'6_the_lovers',       msg:'마음에 담아둔 말을 전하기 좋은 날입니다. 솔직함이 관계의 온도를 높여줄 것입니다.'},
+  {n:'VII',kr:'전차',         en:'The Chariot',      kw:'의지 · 승리 · 추진력',      file:'7_the_chariot',      msg:'강한 의지가 오늘의 장애물을 넘게 해줍니다. 흔들리지 말고 목표를 향해 나아가세요.'},
+  {n:'VIII',kr:'힘',          en:'Strength',         kw:'용기 · 인내 · 온화함',      file:'8_strength',         msg:'부드럽고 차분한 태도가 어떤 강함보다 효과적입니다. 온화함으로 오늘의 난관을 넘으세요.'},
+  {n:'IX', kr:'은둔자',       en:'The Hermit',       kw:'고독 · 성찰 · 내면의 빛',   file:'9_the_hermit',       msg:'잠시 멈추고 내면의 목소리에 귀 기울이세요. 오늘은 혼자만의 시간이 가장 큰 답을 줍니다.'},
+  {n:'X',  kr:'운명의 수레바퀴',en:'Wheel of Fortune',kw:'변화 · 순환 · 운명',       file:'10_wheel_of_fortune',msg:'기다려온 흐름이 드디어 바뀌기 시작합니다. 오늘의 시도는 평소보다 좋은 결과를 가져옵니다.'},
+  {n:'XI', kr:'정의',         en:'Justice',          kw:'균형 · 진실 · 공정',        file:'11_justice',         msg:'솔직하고 공정하게 대응하면 좋은 결과가 따라옵니다. 미뤄온 결정을 오늘 내리세요.'},
+  {n:'XII',kr:'매달린 사람',  en:'The Hanged Man',   kw:'기다림 · 희생 · 전환',      file:'12_the_hanged_man',  msg:'지금은 행동보다 관점을 바꿀 때입니다. 멈춤이 오히려 새로운 길을 열어줍니다.'},
+  {n:'XIII',kr:'죽음',        en:'Death',            kw:'변환 · 끝 · 새 시작',       file:'13_death',           msg:'낡은 것을 내려놓을 때 새로운 것이 들어옵니다. 변화를 두려워하지 말고 받아들이세요.'},
+  {n:'XIV',kr:'절제',         en:'Temperance',       kw:'균형 · 조화 · 인내',        file:'14_temperance',      msg:'무리하지 않는 꾸준함이 오늘의 키워드입니다. 타협과 중용으로 갈등을 부드럽게 풀어내세요.'},
+  {n:'XV', kr:'악마',         en:'The Devil',        kw:'집착 · 속박 · 해방',        file:'15_the_devil',       msg:'당신을 묶어두는 것의 정체를 오늘 직면하세요. 인식하는 순간 사슬이 느슨해집니다.'},
+  {n:'XVI',kr:'탑',           en:'The Tower',        kw:'붕괴 · 계시 · 전환',        file:'16_the_tower',       msg:'갑작스러운 변화가 오히려 더 나은 토대를 쌓는 시작이 됩니다. 무너지는 것을 두려워하지 마세요.'},
+  {n:'XVII',kr:'별',          en:'The Star',         kw:'희망 · 치유 · 영감',        file:'17_the_star',        msg:'어둠이 지나고 회복의 빛이 들어오고 있습니다. 원하는 것을 구체적으로 그려보세요.'},
+  {n:'XVIII',kr:'달',         en:'The Moon',         kw:'무의식 · 불안 · 직관',      file:'18_the_moon',        msg:'보이는 것이 전부가 아닙니다. 직감이 보내는 신호를 가볍게 여기지 마세요.'},
+  {n:'XIX',kr:'태양',         en:'The Sun',          kw:'기쁨 · 성공 · 활력',        file:'19_the_sun',         msg:'오늘은 모든 것이 밝게 풀리는 날입니다. 자신감을 갖고 중요한 자리에 나서세요.'},
+  {n:'XX', kr:'심판',         en:'Judgement',        kw:'부활 · 각성 · 평가',        file:'20_judgement',       msg:'내면의 부름에 솔직하게 응답할 때입니다. 과거의 짐을 내려놓고 새로운 나를 선택하세요.'},
+  {n:'XXI',kr:'세계',         en:'The World',        kw:'완성 · 성취 · 통합',        file:'21_the_world',       msg:'노력의 결실이 눈앞에 있습니다. 마지막 10%를 포기하지 말고 완주하세요.'}
+];
+
+// 날짜 기반 고정 카드 선택
+const today = new Date();
+const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+const card = CARDS[seed % CARDS.length];
+
+// 날짜 배지
+const DAYS = ['일','월','화','수','목','금','토'];
+document.getElementById('dateBadge').textContent =
+  (today.getMonth()+1) + '월 ' + today.getDate() + '일 ' + DAYS[today.getDay()] + '요일';
+
+// 카드 이미지 미리 로드
+document.getElementById('cardImg').src = 'images/' + card.file + '.png';
+document.getElementById('cardImg').alt = card.kr;
+
+let revealed = false;
+function revealCard() {
+  if (revealed) return;
+  revealed = true;
+
+  document.getElementById('cardInner').classList.add('flipped');
+  document.getElementById('revealHint').classList.add('hidden');
+
+  setTimeout(function() {
+    document.getElementById('cardNum').textContent = card.n;
+    document.getElementById('cardKr').textContent = card.kr;
+    document.getElementById('cardEn').textContent = card.en;
+    document.getElementById('cardKw').textContent = card.kw;
+    document.getElementById('cardMsg').textContent = card.msg;
+    document.getElementById('result').classList.add('visible');
+    document.getElementById('cardWrap').style.cursor = 'default';
+  }, 500);
+}
+
+async function shareDaily() {
+  const url = 'https://chihyoung.github.io/tarot-fortune/daily.html';
+  const dateStr = (today.getMonth()+1) + '월 ' + today.getDate() + '일';
+  const text = '✦ ' + dateStr + ' 오늘의 타로 ✦\n🃏 ' + card.kr + ' · ' + card.kw + '\n\n' + card.msg + '\n\n나도 오늘의 카드 뽑기 👉 ' + url;
+  try {
+    if (navigator.share) { await navigator.share({title:'오늘의 타로 한 장', text, url}); return; }
+  } catch(e) {}
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('오늘의 카드가 복사되었습니다 ✦');
+  } catch(e) {}
+}
+
+function showToast(msg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.className = 'share-toast';
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('show'); });
+  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 400); }, 2500);
+}
+
+// 별 생성
+(function(){
+  var c = document.getElementById('stars');
+  var f = document.createDocumentFragment();
+  for(var i=0;i<80;i++){
+    var s=document.createElement('div');
+    var sz=Math.random()*1.8+.4;
+    s.style.cssText='position:absolute;border-radius:50%;background:#fff;width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;opacity:'+(Math.random()*.5+.15)+';animation:twinkle '+(Math.random()*4+3)+'s ease-in-out '+(Math.random()*5)+'s infinite alternate';
+    f.appendChild(s);
+  }
+  c.appendChild(f);
+  var st=document.createElement('style');
+  st.textContent='@keyframes twinkle{from{opacity:.1}to{opacity:.7}}';
+  document.head.appendChild(st);
+})();
+</script>
+</body>
+</html>
