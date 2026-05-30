@@ -107,6 +107,41 @@ h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,30px);font-weight:700;let
 .btn.secondary{border-color:rgba(201,168,76,.25);color:rgba(201,168,76,.6);font-size:10px;padding:10px 28px}
 .btn.secondary:hover{border-color:rgba(201,168,76,.5);color:var(--gold);box-shadow:none}
 
+/* ad modal */
+.ad-modal{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(2,0,10,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+.ad-modal.on{display:flex;animation:fadein .4s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ad-box{
+  position:relative;width:360px;max-width:94vw;
+  background:linear-gradient(160deg,rgba(22,4,46,.98),rgba(8,0,20,.99));
+  border:1px solid rgba(201,168,76,.35);border-radius:20px;
+  padding:36px 28px 30px;text-align:center;
+}
+.ad-box::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent);
+}
+.ad-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;color:rgba(201,168,76,.45);text-transform:uppercase;margin-bottom:18px}
+.ad-slot{
+  min-height:100px;background:rgba(255,255,255,.03);border:1px dashed rgba(201,168,76,.2);
+  border-radius:10px;margin-bottom:22px;display:flex;align-items:center;justify-content:center;
+}
+.ad-slot-hint{font-size:11px;color:rgba(184,168,208,.3);font-family:'Cinzel',serif;letter-spacing:2px}
+.ad-countdown{font-family:'Cinzel',serif;font-size:13px;color:var(--txt2);margin-bottom:18px;letter-spacing:1px}
+.ad-countdown b{color:var(--gold);font-size:18px}
+.ad-skip{
+  background:transparent;border:1px solid rgba(201,168,76,.5);color:var(--gold);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;padding:12px 36px;
+  cursor:pointer;border-radius:32px;transition:all .3s;width:100%;
+  opacity:.4;pointer-events:none;
+}
+.ad-skip.ready{opacity:1;pointer-events:auto}
+.ad-skip.ready:hover{background:rgba(201,168,76,.1);box-shadow:0 0 20px rgba(201,168,76,.28)}
+
 /* share toast */
 .share-toast{
   position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(10px);
@@ -173,6 +208,22 @@ footer{position:relative;z-index:1;padding-bottom:40px;font-family:'Cinzel',seri
   </div>
 </div>
 
+<!-- 광고 모달 -->
+<div class="ad-modal" id="adModal">
+  <div class="ad-box">
+    <div class="ad-label">잠시 후 오늘의 카드가 공개됩니다</div>
+    <div class="ad-slot">
+      <ins class="kakao_ad_area" style="display:none;"
+        data-ad-unit="DAN-XXXXXXXXXX"
+        data-ad-width="320"
+        data-ad-height="100"></ins>
+      <span class="ad-slot-hint">AD</span>
+    </div>
+    <div class="ad-countdown"><b id="adCount">5</b> 초 후 카드 공개</div>
+    <button class="ad-skip" id="adSkip" onclick="closeAd()">✦ &nbsp; 카드 확인하기 &nbsp; ✦</button>
+  </div>
+</div>
+
 <footer><p>The stars have spoken</p></footer>
 
 <script>
@@ -216,13 +267,38 @@ document.getElementById('cardImg').src = 'images/' + card.file + '.png';
 document.getElementById('cardImg').alt = card.kr;
 
 let revealed = false;
+let adTimer = null;
+
 function revealCard() {
   if (revealed) return;
   revealed = true;
-
-  document.getElementById('cardInner').classList.add('flipped');
   document.getElementById('revealHint').classList.add('hidden');
+  document.getElementById('cardWrap').style.cursor = 'default';
+  showAdModal();
+}
 
+function showAdModal() {
+  var modal = document.getElementById('adModal');
+  var countEl = document.getElementById('adCount');
+  var skipBtn = document.getElementById('adSkip');
+  modal.classList.add('on');
+  var count = 5;
+  countEl.textContent = count;
+  adTimer = setInterval(function() {
+    count--;
+    countEl.textContent = count;
+    if (count <= 0) {
+      clearInterval(adTimer);
+      skipBtn.classList.add('ready');
+    }
+  }, 1000);
+}
+
+function closeAd() {
+  clearInterval(adTimer);
+  var modal = document.getElementById('adModal');
+  modal.classList.remove('on');
+  document.getElementById('cardInner').classList.add('flipped');
   setTimeout(function() {
     document.getElementById('cardNum').textContent = card.n;
     document.getElementById('cardKr').textContent = card.kr;
@@ -230,7 +306,6 @@ function revealCard() {
     document.getElementById('cardKw').textContent = card.kw;
     document.getElementById('cardMsg').textContent = card.msg;
     document.getElementById('result').classList.add('visible');
-    document.getElementById('cardWrap').style.cursor = 'default';
   }, 500);
 }
 
