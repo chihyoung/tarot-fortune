@@ -161,13 +161,24 @@
   var spreadOverlay = document.getElementById('spreadOverlay');
   var modeOverlay   = document.getElementById('modeOverlay');
   var intercepted   = false;
+  var skipMode      = new URLSearchParams(location.search).get('mode') === 'three';
+
+  // daily.html에서 '3장 리딩' 클릭 시: 셔플 자동 실행 후 모드 선택 건너뜀
+  if(skipMode){
+    history.replaceState(null,'',location.pathname);
+    window.addEventListener('load', function(){
+      var btn = document.getElementById('shuffleBtn');
+      if(btn) btn.click();
+    });
+  }
 
   new MutationObserver(function(){
     if(intercepted) return;
     var visible = spreadOverlay.style.display === 'flex' || spreadOverlay.classList.contains('spread-visible');
     if(!visible) return;
     intercepted = true;
-    // spreadOverlay 숨기고 모드 선택 화면 표시
+    if(skipMode) return; // 모드 선택 없이 바로 spread 표시
+    // 일반 진입: spreadOverlay 숨기고 모드 선택 화면 표시
     spreadOverlay.style.display = 'none';
     spreadOverlay.classList.remove('spread-visible');
     modeOverlay.style.display = 'flex';
