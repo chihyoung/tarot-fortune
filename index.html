@@ -32,7 +32,7 @@
   gtag('config', 'G-DNCLPB00F5');
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20250525w">
+<link rel="stylesheet" href="style.css?v=20260530a">
 </head>
 <body>
 <div id="stars"></div>
@@ -47,6 +47,37 @@
     <div class="shuffle-deck" id="shuffleDeck"></div>
     <p class="intro-hint" id="introHint">덱을 클릭하거나 버튼을 눌러 섞어주세요</p>
     <button class="shuffle-btn" id="shuffleBtn" onclick="doIntroShuffle()">✦ &nbsp; 카드 섞기 &nbsp; ✦</button>
+  </div>
+</div>
+
+<!-- ── Topic Selection Overlay ── -->
+<div id="topicOverlay" class="spread-overlay" style="display:none;z-index:895">
+  <div class="spread-inner">
+    <div class="intro-eyebrow">✦ &nbsp; Choose Your Question &nbsp; ✦</div>
+    <h2 class="spread-title">무엇이 궁금하신가요?</h2>
+    <p class="spread-sub">오늘 알고 싶은 주제를 선택하세요</p>
+    <div class="topic-grid">
+      <div class="topic-slot" onclick="chooseTopic('love')">
+        <div class="topic-sym">♡</div>
+        <div class="topic-kr">연애 · 감정</div>
+        <div class="topic-desc">마음과 관계의 흐름</div>
+      </div>
+      <div class="topic-slot" onclick="chooseTopic('work')">
+        <div class="topic-sym">✦</div>
+        <div class="topic-kr">직장 · 진로</div>
+        <div class="topic-desc">일과 미래의 방향</div>
+      </div>
+      <div class="topic-slot" onclick="chooseTopic('money')">
+        <div class="topic-sym">◈</div>
+        <div class="topic-kr">재물 · 기회</div>
+        <div class="topic-desc">재물과 기회의 흐름</div>
+      </div>
+      <div class="topic-slot" onclick="chooseTopic('daily')">
+        <div class="topic-sym">☽</div>
+        <div class="topic-kr">오늘 하루</div>
+        <div class="topic-desc">과거 · 현재 · 미래</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -128,6 +159,69 @@
 </div>
 
 <button id="musicToggle" class="music-btn" onclick="toggleMusic()" title="배경음악 켜기/끄기">♪</button>
+<script>
+/* ── 주제 선택 ── */
+(function(){
+  var spreadOverlay = document.getElementById('spreadOverlay');
+  var topicOverlay  = document.getElementById('topicOverlay');
+  var intercepted = false;
+  var _topic = null;
+
+  var TOPICS = {
+    love:  { title:'마음이 전하는 오늘의 메시지',  hint:'감정 · 상대 · 흐름',     pos:['현재 감정','상대 마음','앞으로의 흐름'] },
+    work:  { title:'일과 진로의 오늘 메시지',       hint:'현재 · 장애물 · 조언',   pos:['현재 상황','장애물','조언'] },
+    money: { title:'재물과 기회의 오늘 메시지',     hint:'흐름 · 기회 · 주의',     pos:['현재 흐름','기회','주의할 점'] },
+    daily: { title:'오늘의 별이 전하는 말',         hint:'Past · Present · Future', pos:['과거','현재','미래'] }
+  };
+
+  /* 스프레드 오버레이 감지 → 주제 선택 화면 먼저 */
+  new MutationObserver(function(){
+    var visible = spreadOverlay.style.display==='flex' || spreadOverlay.classList.contains('spread-visible');
+    if(!visible){ intercepted = false; return; }
+    if(intercepted) return;
+    intercepted = true;
+    _topic = null;
+    spreadOverlay.style.display = 'none';
+    spreadOverlay.classList.remove('spread-visible');
+    topicOverlay.style.display = 'flex';
+    requestAnimationFrame(function(){ topicOverlay.classList.add('spread-visible'); });
+  }).observe(spreadOverlay, {attributes:true, attributeFilter:['style','class']});
+
+  window.chooseTopic = function(topic){
+    _topic = topic;
+    var t = TOPICS[topic];
+    /* 힌트 텍스트 업데이트 */
+    var hint = document.querySelector('.hint');
+    if(hint) hint.innerHTML = '✦ &nbsp;' + t.hint + '&nbsp; ✦';
+    /* 트랜지션 */
+    topicOverlay.classList.remove('spread-visible');
+    topicOverlay.classList.add('spread-hiding');
+    setTimeout(function(){
+      topicOverlay.style.display = 'none';
+      topicOverlay.classList.remove('spread-hiding');
+      spreadOverlay.style.display = 'flex';
+      requestAnimationFrame(function(){ spreadOverlay.classList.add('spread-visible'); });
+    }, 500);
+  };
+
+  /* 포지션 레이블 & 타이틀 덮어쓰기 */
+  function applyLabels(){
+    if(!_topic) return;
+    var t = TOPICS[_topic];
+    var titleEl = document.getElementById('sumTitle');
+    if(titleEl && titleEl.textContent !== t.title) titleEl.textContent = t.title;
+    document.querySelectorAll('.sum-pos-lbl').forEach(function(el, i){
+      if(t.pos[i]) el.textContent = '✦ ' + t.pos[i] + ' · ';
+    });
+    document.querySelectorAll('.pos-lbl').forEach(function(el, i){
+      if(t.pos[i]) el.textContent = t.pos[i];
+    });
+  }
+
+  new MutationObserver(applyLabels).observe(document.getElementById('sumText'), {childList:true, subtree:true});
+  new MutationObserver(applyLabels).observe(document.getElementById('grid'),    {childList:true, subtree:true});
+})();
+</script>
 <script>
 (function(){
   var sum = document.getElementById('summary');
