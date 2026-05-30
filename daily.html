@@ -51,19 +51,20 @@ h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,30px);font-weight:700;let
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;overflow:hidden}
 
-/* 뒷면 */
-.card-back{
+/* 뒷면 — 3D 레이어(.card-back)와 시각 레이어(.card-back-skin)를 분리 */
+.card-back-skin{
+  position:absolute;inset:0;border-radius:14px;
   background:
     repeating-linear-gradient(45deg,rgba(201,168,76,.06) 0,rgba(201,168,76,.06) 1px,transparent 1px,transparent 7px),
     linear-gradient(155deg,rgba(28,4,58,.98) 0%,rgba(7,0,18,.99) 100%);
   border:1px solid rgba(201,168,76,.55);
   animation:card-glow 3.4s ease-in-out infinite;
 }
-.card-back::before{
-  content:'';position:absolute;inset:3px;border-radius:3px;
+.card-back-skin::before{
+  content:'';position:absolute;inset:3px;border-radius:12px;
   border:1px solid rgba(201,168,76,.2);
 }
-.card-back::after{
+.card-back-skin::after{
   content:'✦';position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   color:rgba(201,168,76,.32);font-size:32px;
@@ -184,7 +185,9 @@ footer{position:relative;z-index:1;padding-bottom:40px;font-family:'Cinzel',seri
 
   <div class="card-wrap" id="cardWrap" onclick="revealCard()">
     <div class="card-inner" id="cardInner">
-      <div class="card-face card-back"></div>
+      <div class="card-face card-back">
+        <div class="card-back-skin"></div>
+      </div>
       <div class="card-face card-front">
         <img id="cardImg" src="" alt="">
       </div>
