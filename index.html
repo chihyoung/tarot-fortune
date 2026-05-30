@@ -33,6 +33,13 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=20250525w">
+<script>
+if(sessionStorage.getItem('goto3card')==='1'){
+  sessionStorage.removeItem('goto3card');
+  document.documentElement.classList.add('skip-intro');
+}
+</script>
+<style>.skip-intro #introOverlay{display:none!important}</style>
 </head>
 <body>
 <div id="stars"></div>
@@ -161,14 +168,12 @@
   var spreadOverlay = document.getElementById('spreadOverlay');
   var modeOverlay   = document.getElementById('modeOverlay');
   var intercepted   = false;
-  var skipMode      = new URLSearchParams(location.search).get('mode') === 'three';
+  var skipMode      = document.documentElement.classList.contains('skip-intro');
 
-  // daily.html에서 '3장 리딩' 클릭 시: 셔플 자동 실행 후 모드 선택 건너뜀
+  // skip-intro 모드: 인트로는 이미 <head>에서 숨김 → app.js 로드 후 doIntroShuffle 자동 실행
   if(skipMode){
-    history.replaceState(null,'',location.pathname);
-    window.addEventListener('load', function(){
-      var btn = document.getElementById('shuffleBtn');
-      if(btn) btn.click();
+    document.addEventListener('DOMContentLoaded', function(){
+      if(typeof doIntroShuffle === 'function') doIntroShuffle();
     });
   }
 
