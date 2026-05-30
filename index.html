@@ -214,11 +214,20 @@
     var t = TOPICS[_topic];
     var titleEl = document.getElementById('sumTitle');
     if(titleEl && titleEl.textContent !== t.title) titleEl.textContent = t.title;
+    // dataset.topic 플래그로 동일 토픽에서 재처리 방지 (childList 무한루프 차단)
     document.querySelectorAll('.sum-pos-lbl').forEach(function(el, i){
-      if(t.pos[i]) el.textContent = '✦ ' + t.pos[i] + ' · ';
+      if(!t.pos[i] || el.dataset.topic === _topic) return;
+      el.dataset.topic = _topic;
+      var html = el.innerHTML;
+      var sep = '&nbsp;·&nbsp;';
+      var si = html.indexOf(sep);
+      el.innerHTML = si >= 0
+        ? '✦ ' + t.pos[i] + ' &nbsp;·&nbsp; ' + html.slice(si + sep.length)
+        : '✦ ' + t.pos[i] + ' · ';
     });
+    // textContent 동일값 체크로 불필요한 childList 뮤테이션 방지
     document.querySelectorAll('.pos-lbl').forEach(function(el, i){
-      if(t.pos[i]) el.textContent = t.pos[i];
+      if(t.pos[i] && el.textContent !== t.pos[i]) el.textContent = t.pos[i];
     });
   }
 
@@ -260,7 +269,19 @@
   }
 })();
 </script>
-<script src="app.js?v=20260526c"></script>
+<script src="app.js?v=20260530b"></script>
+<script>
+/* 다시 뽑기: 원래 shuffle(=_0x48663f)이 spreadOverlay를 표시하면
+   topic 상태머신(STATE=IDLE)이 가로채 topic overlay를 먼저 보여줌.
+   _initCardSpread가 app.js에 노출되면 그쪽을 우선 사용. */
+(function(){
+  var _orig = window.shuffle;
+  window.shuffle = function(){
+    if(window._initCardSpread) window._initCardSpread();
+    else if(_orig) _orig();
+  };
+})();
+</script>
 <!-- 카카오 애드핏 스크립트 (data-ad-unit ID 교체 후 주석 해제) -->
 <!-- <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script> -->
 </body>
