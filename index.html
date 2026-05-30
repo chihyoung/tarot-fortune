@@ -164,8 +164,9 @@
 (function(){
   var spreadOverlay = document.getElementById('spreadOverlay');
   var topicOverlay  = document.getElementById('topicOverlay');
-  var intercepted = false;
   var _topic = null;
+  // 상태: IDLE → TOPIC_SHOWN → TOPIC_SELECTED → READING → IDLE
+  var STATE = 'IDLE';
 
   var TOPICS = {
     love:  { title:'마음이 전하는 오늘의 메시지',  hint:'감정 · 상대 · 흐름',     pos:['현재 감정','상대 마음','앞으로의 흐름'] },
@@ -174,26 +175,30 @@
     daily: { title:'오늘의 별이 전하는 말',         hint:'Past · Present · Future', pos:['과거','현재','미래'] }
   };
 
-  /* 스프레드 오버레이 감지 → 주제 선택 화면 먼저 */
   new MutationObserver(function(){
     var visible = spreadOverlay.style.display==='flex' || spreadOverlay.classList.contains('spread-visible');
-    if(!visible){ intercepted = false; return; }
-    if(intercepted) return;
-    intercepted = true;
-    _topic = null;
-    spreadOverlay.style.display = 'none';
-    spreadOverlay.classList.remove('spread-visible');
-    topicOverlay.style.display = 'flex';
-    requestAnimationFrame(function(){ topicOverlay.classList.add('spread-visible'); });
+    if(visible){
+      if(STATE === 'IDLE'){
+        STATE = 'TOPIC_SHOWN';
+        _topic = null;
+        spreadOverlay.style.display = 'none';
+        spreadOverlay.classList.remove('spread-visible');
+        topicOverlay.style.display = 'flex';
+        requestAnimationFrame(function(){ topicOverlay.classList.add('spread-visible'); });
+      } else if(STATE === 'TOPIC_SELECTED'){
+        STATE = 'READING';
+      }
+    } else {
+      if(STATE === 'READING') STATE = 'IDLE';
+    }
   }).observe(spreadOverlay, {attributes:true, attributeFilter:['style','class']});
 
   window.chooseTopic = function(topic){
     _topic = topic;
+    STATE = 'TOPIC_SELECTED';
     var t = TOPICS[topic];
-    /* 힌트 텍스트 업데이트 */
     var hint = document.querySelector('.hint');
     if(hint) hint.innerHTML = '✦ &nbsp;' + t.hint + '&nbsp; ✦';
-    /* 트랜지션 */
     topicOverlay.classList.remove('spread-visible');
     topicOverlay.classList.add('spread-hiding');
     setTimeout(function(){
@@ -204,7 +209,6 @@
     }, 500);
   };
 
-  /* 포지션 레이블 & 타이틀 덮어쓰기 */
   function applyLabels(){
     if(!_topic) return;
     var t = TOPICS[_topic];
