@@ -227,6 +227,26 @@ body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-h
 }
 .shuffle-btn:disabled{opacity:.6;cursor:default;transform:none}
 
+/* ── intro mode selection ── */
+.intro-mode-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.intro-mode-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:transparent;
+  border:1px solid rgba(201,168,76,.35);border-radius:16px;
+  padding:18px 28px;cursor:pointer;text-decoration:none;
+  transition:all .3s;min-width:130px;
+}
+.intro-mode-btn:hover{transform:translateY(-3px);box-shadow:0 0 24px rgba(201,168,76,.2)}
+.intro-mode-daily{border-color:rgba(138,90,200,.45)}
+.intro-mode-daily:hover{border-color:rgba(163,85,184,.8);box-shadow:0 0 24px rgba(138,90,200,.25)}
+.intro-mode-three{border-color:rgba(201,168,76,.45)}
+.intro-mode-three:hover{border-color:var(--gold);box-shadow:0 0 24px rgba(201,168,76,.28)}
+.intro-mode-icon{font-family:'Cinzel',serif;font-size:13px;color:rgba(201,168,76,.6);letter-spacing:2px}
+.intro-mode-daily .intro-mode-icon{color:rgba(163,85,184,.8)}
+.intro-mode-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:600}
+.intro-mode-daily .intro-mode-title{color:rgba(200,170,255,.9)}
+.intro-mode-desc{font-family:'Noto Serif KR',serif;font-size:10px;color:rgba(184,168,208,.5);letter-spacing:.5px}
+
 /* ── stars ── */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0}
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) var(--dl,0s) infinite ease-in-out}
