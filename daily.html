@@ -53,7 +53,37 @@ h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,30px);font-weight:700;let
 .card-inner{width:100%;height:340px;position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.4,0,.2,1)}
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;overflow:hidden}
-.card-back{border:1px solid rgba(201,168,76,.5)}
+.card-back{border:1px solid rgba(201,168,76,.5);transition:box-shadow .35s,border-color .35s}
+
+/* hover — 3장 카드와 동일한 효과 */
+.card-wrap:hover .card-inner:not(.flipped){transform:rotateY(16deg) translateY(-10px) scale(1.04)}
+.card-wrap:hover .card-inner:not(.flipped) .card-back{
+  border-color:rgba(160,60,255,.9);
+  box-shadow:0 0 0 1px rgba(160,60,255,.75),0 0 14px 5px rgba(140,40,220,.95),0 0 36px 12px rgba(120,20,200,.7),0 0 72px 22px rgba(100,0,185,.45),0 0 120px 38px rgba(80,0,160,.22),inset 0 0 28px rgba(160,80,255,.1);
+  animation:card-back-pulse 1.5s ease-in-out infinite;
+}
+.card-wrap:hover .card-inner:not(.flipped) .card-back::before{
+  content:'';position:absolute;inset:0;border-radius:13px;
+  background:radial-gradient(ellipse at 50% 30%,rgba(170,70,255,.14) 0%,rgba(120,20,200,.06) 55%,transparent 78%);
+  pointer-events:none;z-index:1;
+}
+.card-wrap:hover .card-inner:not(.flipped) .card-back::after{
+  content:'';position:absolute;top:0;left:0;width:55%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(210,130,255,.14) 42%,rgba(245,185,255,.28) 50%,rgba(210,130,255,.14) 58%,transparent);
+  transform:translateX(-220%) skewX(-14deg);
+  animation:card-shimmer 2.4s ease-in-out infinite;
+  pointer-events:none;z-index:2;
+}
+@keyframes card-back-pulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(160,60,255,.75),0 0 14px 5px rgba(140,40,220,.95),0 0 36px 12px rgba(120,20,200,.7),0 0 72px 22px rgba(100,0,185,.45),0 0 120px 38px rgba(80,0,160,.22),inset 0 0 28px rgba(160,80,255,.1)}
+  50%{box-shadow:0 0 0 2px rgba(195,100,255,1),0 0 22px 9px rgba(165,55,235,1),0 0 55px 20px rgba(145,30,215,.85),0 0 100px 32px rgba(115,5,195,.6),0 0 155px 50px rgba(90,0,170,.32),inset 0 0 40px rgba(185,110,255,.16)}
+}
+@keyframes card-shimmer{
+  0%{transform:translateX(-220%) skewX(-14deg);opacity:0}
+  12%{opacity:1}
+  68%{transform:translateX(310%) skewX(-14deg);opacity:.75}
+  100%{transform:translateX(310%) skewX(-14deg);opacity:0}
+}
 
 /* 앞면 */
 .card-front{transform:rotateY(180deg);background:#060012;border:1px solid rgba(201,168,76,.55)}
