@@ -114,6 +114,10 @@
     </div>
   </div>
 
+  <div id="shareWrap" style="text-align:center;margin-bottom:20px;display:none">
+    <button class="btn share-btn" onclick="shareResult()">✦ &nbsp; 운세 결과 공유하기 &nbsp; ✦</button>
+  </div>
+
   <button class="btn" onclick="shuffle()">✦ &nbsp; 카드 다시 뽑기 &nbsp; ✦</button>
 
   <footer>
@@ -124,6 +128,40 @@
 </div>
 
 <button id="musicToggle" class="music-btn" onclick="toggleMusic()" title="배경음악 켜기/끄기">♪</button>
+<script>
+(function(){
+  var sum = document.getElementById('summary');
+  var wrap = document.getElementById('shareWrap');
+  new MutationObserver(function(){
+    wrap.style.display = sum.classList.contains('on') ? 'block' : 'none';
+  }).observe(sum, {attributes:true, attributeFilter:['class']});
+
+  window.shareResult = async function(){
+    var cards = Array.from(document.querySelectorAll('.cname-kr')).map(function(el){ return el.textContent.trim(); }).filter(Boolean);
+    var title = document.getElementById('sumTitle').textContent.trim();
+    var rawText = document.getElementById('sumText').innerText.trim();
+    var url = 'https://chihyoung.github.io/tarot-fortune/';
+    var cardLine = cards.length ? '🃏 ' + cards.join(' · ') + '\n\n' : '';
+    var shareText = '✦ 오늘의 타로 운세 ✦\n' + cardLine + title + '\n\n' + rawText + '\n\n나도 타로 운세 뽑기 👉 ' + url;
+    try {
+      if(navigator.share){ await navigator.share({title:'오늘의 타로 운세', text:shareText, url:url}); return; }
+    } catch(e) {}
+    try {
+      await navigator.clipboard.writeText(shareText);
+      showToast('운세 결과가 복사되었습니다 ✦');
+    } catch(e) {}
+  };
+
+  function showToast(msg){
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.className = 'share-toast';
+    document.body.appendChild(t);
+    requestAnimationFrame(function(){ t.classList.add('show'); });
+    setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 400); }, 2500);
+  }
+})();
+</script>
 <script src="app.js?v=20260526c"></script>
 <!-- 카카오 애드핏 스크립트 (data-ad-unit ID 교체 후 주석 해제) -->
 <!-- <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script> -->

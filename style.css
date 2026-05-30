@@ -393,6 +393,20 @@ h1{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,50px);font-weight:700;
 .btn:hover::before{opacity:1}
 .btn:active{transform:translateY(-1px)}
 
+.share-btn{font-size:11px;padding:12px 32px;border-color:rgba(138,90,200,.5);color:rgba(200,170,255,.85)}
+.share-btn:hover{border-color:rgba(180,130,255,.8);box-shadow:0 0 26px rgba(138,90,200,.35)}
+
+.share-toast{
+  position:fixed;bottom:100px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:rgba(18,8,36,.96);color:#c9a84c;
+  border:1px solid rgba(201,168,76,.4);border-radius:24px;
+  padding:12px 24px;font-size:13px;letter-spacing:.5px;
+  font-family:'Noto Serif KR',serif;z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .3s,transform .3s;white-space:nowrap
+}
+.share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 footer{margin-top:56px;font-family:'Cinzel',serif;font-size:10px;color:rgba(184,168,208,.22);letter-spacing:2px}
 .visitor-counter{margin-top:14px;font-size:11px;color:rgba(201,168,76,.6);letter-spacing:2px;font-family:'Cinzel',serif}
 
