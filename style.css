@@ -209,6 +209,34 @@ body{background:#05000f;color:var(--txt);font-family:'Noto Serif KR',serif;min-h
   animation:none;
 }
 .spread-slot.selected .spread-card-face::after{color:rgba(201,168,76,.9)}
+/* ── topic selection ── */
+.topic-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  width:100%;max-width:380px;margin:0 auto;
+}
+.topic-slot{
+  background:linear-gradient(160deg,rgba(28,5,58,.85),rgba(8,0,20,.92));
+  border:1px solid rgba(201,168,76,.28);border-radius:16px;
+  padding:26px 12px;text-align:center;cursor:pointer;
+  transition:border-color .3s,box-shadow .3s,transform .25s;
+}
+.topic-slot:hover{
+  border-color:rgba(201,168,76,.7);
+  box-shadow:0 0 22px rgba(201,168,76,.18);
+  transform:translateY(-4px);
+}
+.topic-sym{
+  font-size:26px;color:var(--gold);opacity:.8;margin-bottom:10px;line-height:1;
+}
+.topic-kr{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;
+  color:var(--gold-l);margin-bottom:6px;
+}
+.topic-desc{
+  font-family:'Noto Serif KR',serif;font-size:10px;
+  color:rgba(184,168,208,.45);letter-spacing:.3px;
+}
+
 .spread-count{
   font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;
   color:rgba(201,168,76,.5);
