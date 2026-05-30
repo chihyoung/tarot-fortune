@@ -43,20 +43,36 @@
   <div class="intro-inner">
     <div class="intro-eyebrow">✦ &nbsp; Your Fortune Awaits &nbsp; ✦</div>
     <h2 class="intro-title">오늘의 운명을 열어보세요</h2>
-    <p class="intro-sub">어떤 방식으로 오늘의 운세를 볼까요?</p>
+    <p class="intro-sub">카드를 직접 섞어<br>당신만의 오늘 운세를 펼쳐보세요</p>
     <div class="shuffle-deck" id="shuffleDeck"></div>
-    <p class="intro-hint" id="introHint">3장 리딩 — 덱을 클릭하거나 버튼을 눌러 섞어주세요</p>
-    <div class="intro-mode-row">
-      <a href="daily.html" class="intro-mode-btn intro-mode-daily">
-        <span class="intro-mode-icon">✦</span>
-        <span class="intro-mode-title">오늘의 한 장</span>
-        <span class="intro-mode-desc">하루 한 장 · 간단하게</span>
-      </a>
-      <button class="intro-mode-btn intro-mode-three" id="shuffleBtn" onclick="doIntroShuffle()">
-        <span class="intro-mode-icon">✦✦✦</span>
-        <span class="intro-mode-title">3장 리딩</span>
-        <span class="intro-mode-desc">과거 · 현재 · 미래</span>
-      </button>
+    <p class="intro-hint" id="introHint">덱을 클릭하거나 버튼을 눌러 섞어주세요</p>
+    <button class="shuffle-btn" id="shuffleBtn" onclick="doIntroShuffle()">✦ &nbsp; 카드 섞기 &nbsp; ✦</button>
+  </div>
+</div>
+
+<!-- ── Mode Selection Overlay ── -->
+<div id="modeOverlay" class="spread-overlay" style="display:none;z-index:895">
+  <div class="spread-inner">
+    <div class="intro-eyebrow">✦ &nbsp; Choose Your Reading &nbsp; ✦</div>
+    <h2 class="spread-title">어떤 방식으로 볼까요?</h2>
+    <p class="spread-sub">직관을 따라 오늘의 방식을 선택하세요</p>
+    <div class="mode-select-row">
+      <div class="mode-select-slot" onclick="chooseDailyMode()">
+        <div class="spread-card-face mode-select-face"></div>
+        <div class="mode-select-info">
+          <div class="mode-select-kr">오늘의 한 장</div>
+          <div class="mode-select-en">Daily Draw</div>
+          <div class="mode-select-desc">하루를 위한 한 가지 메시지</div>
+        </div>
+      </div>
+      <div class="mode-select-slot" onclick="chooseThreeMode()">
+        <div class="spread-card-face mode-select-face"></div>
+        <div class="mode-select-info">
+          <div class="mode-select-kr">3장 리딩</div>
+          <div class="mode-select-en">Past · Present · Future</div>
+          <div class="mode-select-desc">과거와 현재, 미래를 읽다</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -141,7 +157,40 @@
 <button id="musicToggle" class="music-btn" onclick="toggleMusic()" title="배경음악 켜기/끄기">♪</button>
 <script>
 (function(){
-  var sum = document.getElementById('summary');
+  /* ── 모드 선택 인터셉터 ── */
+  var spreadOverlay = document.getElementById('spreadOverlay');
+  var modeOverlay   = document.getElementById('modeOverlay');
+  var intercepted   = false;
+
+  new MutationObserver(function(){
+    if(intercepted) return;
+    var visible = spreadOverlay.style.display === 'flex' || spreadOverlay.classList.contains('spread-visible');
+    if(!visible) return;
+    intercepted = true;
+    // spreadOverlay 숨기고 모드 선택 화면 표시
+    spreadOverlay.style.display = 'none';
+    spreadOverlay.classList.remove('spread-visible');
+    modeOverlay.style.display = 'flex';
+    requestAnimationFrame(function(){ modeOverlay.classList.add('spread-visible'); });
+  }).observe(spreadOverlay, {attributes:true, attributeFilter:['style','class']});
+
+  window.chooseDailyMode = function(){
+    window.location.href = 'daily.html';
+  };
+
+  window.chooseThreeMode = function(){
+    modeOverlay.classList.remove('spread-visible');
+    modeOverlay.classList.add('spread-hiding');
+    setTimeout(function(){
+      modeOverlay.style.display = 'none';
+      modeOverlay.classList.remove('spread-hiding');
+      spreadOverlay.style.display = 'flex';
+      requestAnimationFrame(function(){ spreadOverlay.classList.add('spread-visible'); });
+    }, 500);
+  };
+
+  /* ── 공유 버튼 ── */
+  var sum  = document.getElementById('summary');
   var wrap = document.getElementById('shareWrap');
   new MutationObserver(function(){
     wrap.style.display = sum.classList.contains('on') ? 'block' : 'none';
@@ -149,24 +198,18 @@
 
   window.shareResult = async function(){
     var cards = Array.from(document.querySelectorAll('.cname-kr')).map(function(el){ return el.textContent.trim(); }).filter(Boolean);
-    var title = document.getElementById('sumTitle').textContent.trim();
+    var title   = document.getElementById('sumTitle').textContent.trim();
     var rawText = document.getElementById('sumText').innerText.trim();
-    var url = 'https://chihyoung.github.io/tarot-fortune/';
+    var url     = 'https://chihyoung.github.io/tarot-fortune/';
     var cardLine = cards.length ? '🃏 ' + cards.join(' · ') + '\n\n' : '';
     var shareText = '✦ 오늘의 타로 운세 ✦\n' + cardLine + title + '\n\n' + rawText + '\n\n나도 타로 운세 뽑기 👉 ' + url;
-    try {
-      if(navigator.share){ await navigator.share({title:'오늘의 타로 운세', text:shareText, url:url}); return; }
-    } catch(e) {}
-    try {
-      await navigator.clipboard.writeText(shareText);
-      showToast('운세 결과가 복사되었습니다 ✦');
-    } catch(e) {}
+    try { if(navigator.share){ await navigator.share({title:'오늘의 타로 운세', text:shareText, url:url}); return; } } catch(e){}
+    try { await navigator.clipboard.writeText(shareText); showToast('운세 결과가 복사되었습니다 ✦'); } catch(e){}
   };
 
   function showToast(msg){
     var t = document.createElement('div');
-    t.textContent = msg;
-    t.className = 'share-toast';
+    t.textContent = msg; t.className = 'share-toast';
     document.body.appendChild(t);
     requestAnimationFrame(function(){ t.classList.add('show'); });
     setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 400); }, 2500);
